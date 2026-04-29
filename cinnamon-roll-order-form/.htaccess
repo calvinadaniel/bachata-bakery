@@ -1,0 +1,37 @@
+# =============================================================
+# Bachata Bakery — Root .htaccess
+# Protects secrets and internal paths from direct browser access.
+# =============================================================
+
+# --- Block .env files ---
+<Files ".env">
+    Require all denied
+</Files>
+
+# --- Block api/helpers/ from direct HTTP access ---
+# (api/helpers/ has its own .htaccess, but this is belt-and-suspenders)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to helpers
+    RewriteRule ^api/helpers/ - [F,L]
+
+    # Force HTTPS — UNCOMMENT the two lines below before going live on Hostinger.
+    # Leave commented during local development to avoid redirect loops.
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# --- Security headers ---
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# --- PHP settings (Hostinger shared) ---
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+</IfModule>

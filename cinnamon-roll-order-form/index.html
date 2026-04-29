@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pre-order fresh handcrafted cinnamon rolls from Bachata Bakery. Orders open every Friday.">
+  <title>Order Cinnamon Rolls — Bachata Bakery</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+  ============================================================ -->
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">
+        <span class="brand-name">Bachata Bakery</span>
+        <span class="brand-tagline">Handcrafted with sabor</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="site-main">
+
+    <!-- ============================================================
+         CAPACITY BANNER — visible only when form is open
+    ============================================================ -->
+    <div id="capacity-banner" class="capacity-banner" hidden>
+      <div class="container">
+        <div class="cap-stats">
+
+          <div class="cap-stat">
+            <div class="cap-stat-header">
+              <span class="cap-label">Rolls remaining</span>
+              <span id="rolls-count" class="cap-count">—</span>
+            </div>
+            <div class="cap-bar-track" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                 aria-label="Rolls remaining">
+              <div id="rolls-bar" class="cap-bar"></div>
+            </div>
+          </div>
+
+          <div class="cap-divider" aria-hidden="true"></div>
+
+          <div class="cap-stat">
+            <div class="cap-stat-header">
+              <span class="cap-label">Order slots remaining</span>
+              <span id="orders-count" class="cap-count">—</span>
+            </div>
+            <div class="cap-bar-track" role="progressbar"
+                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="50"
+                 aria-label="Order slots remaining">
+              <div id="orders-bar" class="cap-bar"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CLOSED / COUNTDOWN — visible when form is closed
+    ============================================================ -->
+    <section id="closed-section" class="closed-section">
+      <div class="container">
+        <div class="closed-inner">
+
+          <p class="closed-eyebrow">Coming soon</p>
+          <h1 id="closed-heading" class="closed-heading">Orders Open Every Friday</h1>
+          <p id="closed-sub" class="closed-sub">
+            Fresh cinnamon rolls, made to order — pick ups available on Fridays.
+          </p>
+
+          <div class="countdown" id="countdown" aria-live="polite" aria-label="Time until orders open">
+            <div class="countdown-unit">
+              <span class="countdown-num" id="cd-days">—</span>
+              <span class="countdown-label">days</span>
+            </div>
+            <span class="countdown-sep" aria-hidden="true">:</span>
+            <div class="countdown-unit">
+              <span class="countdown-num" id="cd-hours">—</span>
+              <span class="countdown-label">hrs</span>
+            </div>
+            <span class="countdown-sep" aria-hidden="true">:</span>
+            <div class="countdown-unit">
+              <span class="countdown-num" id="cd-mins">—</span>
+              <span class="countdown-label">min</span>
+            </div>
+            <span class="countdown-sep" aria-hidden="true">:</span>
+            <div class="countdown-unit">
+              <span class="countdown-num" id="cd-secs">—</span>
+              <span class="countdown-label">sec</span>
+            </div>
+          </div>
+
+          <p id="next-open-note" class="next-open-note"></p>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ORDER FORM — visible when form is open
+    ============================================================ -->
+    <section id="order-section" class="order-section" hidden>
+      <div class="container">
+        <div class="order-inner">
+
+          <header class="order-header">
+            <h1 class="order-heading">Reserve Your Rolls</h1>
+            <p class="order-sub">
+              Orders close Sunday at midnight — or when we sell out. No refunds after Sunday.
+            </p>
+          </header>
+
+          <form id="order-form" novalidate>
+
+            <!-- Customer info -->
+            <fieldset class="form-group">
+              <legend class="form-legend">Your information</legend>
+
+              <div class="field">
+                <label class="field-label" for="customer-name">
+                  Full name <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input class="field-input" type="text" id="customer-name" name="name"
+                       autocomplete="name" required maxlength="120"
+                       placeholder="Maria Santos"
+                       aria-describedby="name-error">
+                <span class="field-error" id="name-error" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="customer-email">
+                  Email address <span class="required" aria-hidden="true">*</span>
+                </label>
+                <input class="field-input" type="email" id="customer-email" name="email"
+                       autocomplete="email" required maxlength="180"
+                       placeholder="maria@email.com"
+                       aria-describedby="email-error">
+                <span class="field-error" id="email-error" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="customer-phone">
+                  Phone number <span class="field-optional">(optional)</span>
+                </label>
+                <input class="field-input" type="tel" id="customer-phone" name="phone"
+                       autocomplete="tel" maxlength="20"
+                       placeholder="302-555-0101"
+                       aria-describedby="phone-error">
+                <span class="field-error" id="phone-error" role="alert"></span>
+              </div>
+            </fieldset>
+
+            <!-- Order details -->
+            <fieldset class="form-group">
+              <legend class="form-legend">Your order</legend>
+
+              <div class="field">
+                <label class="field-label" for="variant">
+                  Variety <span class="required" aria-hidden="true">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select class="field-select" id="variant" name="variant" required
+                          aria-describedby="variant-error">
+                    <option value="">— Choose a variety —</option>
+                    <option value="Classic Glazed">Classic Glazed</option>
+                    <option value="Cream Cheese Frosted">Cream Cheese Frosted</option>
+                    <option value="Brown Butter Pecan">Brown Butter Pecan</option>
+                  </select>
+                </div>
+                <span class="field-error" id="variant-error" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <span class="field-label" id="qty-label">
+                  Quantity <span class="required" aria-hidden="true">*</span>
+                </span>
+                <div class="qty-picker" role="group" aria-labelledby="qty-label">
+                  <button type="button" class="qty-btn qty-dec"
+                          aria-label="Decrease quantity" disabled>−</button>
+                  <span id="qty-display" class="qty-display" aria-live="polite"
+                        aria-atomic="true">1</span>
+                  <button type="button" class="qty-btn qty-inc"
+                          aria-label="Increase quantity">+</button>
+                </div>
+                <input type="hidden" id="quantity" name="quantity" value="1">
+                <p id="qty-note" class="field-hint">Max 12 per order</p>
+                <span class="field-error" id="qty-error" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="pickup-date">
+                  Pickup day <span class="required" aria-hidden="true">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select class="field-select" id="pickup-date" name="pickup_date" required
+                          aria-describedby="pickup-error">
+                    <option value="">— Choose pickup day —</option>
+                    <!-- Populated by JS from current window dates -->
+                  </select>
+                </div>
+                <span class="field-error" id="pickup-error" role="alert"></span>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="special-notes">
+                  Special requests <span class="field-optional">(optional)</span>
+                </label>
+                <textarea class="field-textarea" id="special-notes" name="notes"
+                          rows="3" maxlength="500"
+                          placeholder="Allergies, extra icing, etc."></textarea>
+              </div>
+            </fieldset>
+
+            <!-- Payment — Square card mounts here in Phase 4 -->
+            <fieldset class="form-group" id="payment-fieldset">
+              <legend class="form-legend">Payment</legend>
+              <div id="card-container" class="card-container">
+                <p class="card-placeholder">
+                  Secure card payment — powered by Square
+                </p>
+              </div>
+              <span class="field-error" id="card-error" role="alert"></span>
+            </fieldset>
+
+            <!-- Order total + submit -->
+            <div class="order-footer">
+              <div class="order-total">
+                <span class="total-label">Order total</span>
+                <span id="order-total-display" class="total-amount">$6.00</span>
+              </div>
+
+              <button type="submit" id="submit-btn" class="btn-submit">
+                <span class="btn-label">Place Order</span>
+                <span class="btn-spinner" hidden aria-hidden="true"></span>
+              </button>
+
+              <p class="submit-note">
+                Your card is charged immediately. Confirmation sent by email.
+              </p>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FORM MESSAGE — success / persistent error
+    ============================================================ -->
+    <div id="form-message" class="form-message" hidden role="status" aria-live="polite">
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="site-footer">
+    <div class="container">
+      <p class="footer-brand">Bachata Bakery</p>
+      <p class="footer-contact">
+        Questions? Email
+        <a href="mailto:info@bachatababakery.com">info@bachatababakery.com</a>
+      </p>
+      <p class="footer-legal">
+        All sales final. Orders confirmed by email only.
+      </p>
+    </div>
+  </footer>
+
+  <!--
+    Square Web Payments SDK is loaded dynamically by form.js based on APP_ENV in .env.
+    Sandbox URL:    https://sandbox.web.squarecdn.com/v1/square.js
+    Production URL: https://web.squarecdn.com/v1/square.js
+  -->
+  <script src="assets/js/form.js" defer></script>
+</body>
+</html>

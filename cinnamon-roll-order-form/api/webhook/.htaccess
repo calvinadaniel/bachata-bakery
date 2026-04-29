@@ -1,0 +1,9 @@
+# api/webhook/.htaccess
+#
+# Allow POST from anywhere (Square's servers need to reach this endpoint).
+# Block all other HTTP methods from the browser — only square.php is
+# a valid target here; direct browser GETs get a 405.
+
+<LimitExcept POST>
+    Require all denied
+</LimitExcept>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bachata Bakery — Cinnamon Roll Order System · Proposal & Quote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --brown:     #3B1A08;
+      --cream:     #F5EFE6;
+      --teal:      #1A9E8F;
+      --coral:     #E52521;
+      --amber:     #F4A228;
+      --white:     #FFFFFF;
+      --gray-50:   #FDFAF7;
+      --gray-100:  #F5F0EA;
+      --gray-200:  #EDE7DE;
+      --gray-400:  #C4B5A5;
+      --gray-500:  #9E8C79;
+      --gray-700:  #5C4A38;
+      --font-d:    'Playfair Display', Georgia, serif;
+      --font-b:    'DM Sans', system-ui, sans-serif;
+      --font-m:    'DM Mono', 'Courier New', monospace;
+      --r:         8px;
+      --rl:        14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-b); background: var(--cream); color: var(--brown); line-height: 1.7; font-size: 1rem; }
+
+    /* ─── PAGE SHELL ─── */
+    .page { max-width: 1000px; margin: 0 auto; }
+
+    /* ─── COVER ─── */
+    .cover {
+      background: var(--brown);
+      color: var(--cream);
+      padding: 4rem 3rem;
+      position: relative;
+      overflow: hidden;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 10% 90%, rgba(244,162,40,.2) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 10%, rgba(26,158,143,.15) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .cover-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .cover-brand { font-family: var(--font-m); font-size: 0.72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--amber); }
+    .cover h1 { font-family: var(--font-d); font-size: clamp(2rem,4vw,3rem); font-weight: 900; line-height: 1.1; margin-top: .5rem; }
+    .cover-tagline { color: var(--gray-400); font-size: .95rem; margin-top: .75rem; max-width: 480px; }
+    .cover-badge {
+      background: rgba(244,162,40,.15);
+      border: 1.5px solid rgba(244,162,40,.4);
+      border-radius: var(--r);
+      padding: .75rem 1.25rem;
+      font-family: var(--font-m);
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-align: right;
+      color: var(--amber);
+      flex-shrink: 0;
+    }
+    .cover-badge span { display: block; color: var(--cream); font-family: var(--font-b); font-size: 1rem; font-weight: 600; letter-spacing: 0; }
+    .cover-meta {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      position: relative;
+    }
+    @media (max-width: 640px) { .cover-meta { grid-template-columns: 1fr 1fr; } }
+    .cover-meta-item { font-size: .8rem; }
+    .cover-meta-label { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-500); margin-bottom: .2rem; }
+    .cover-meta-val { color: var(--cream); font-weight: 600; }
+
+    /* ─── BODY ─── */
+    .body { padding: 3rem 3rem; }
+    @media (max-width: 640px) { .body { padding: 2rem 1.25rem; } .cover { padding: 2.5rem 1.5rem; } }
+
+    /* ─── SECTION ─── */
+    .section { margin-bottom: 3.5rem; }
+    .sh { display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem; padding-bottom: .75rem; border-bottom: 2px solid var(--gray-200); }
+    .sh-num { font-family: var(--font-m); font-size: .7rem; background: var(--brown); color: var(--amber); padding: 2px 8px; border-radius: 4px; letter-spacing: .08em; }
+    .sh h2 { font-family: var(--font-d); font-size: clamp(1.2rem,2.5vw,1.6rem); font-weight: 700; }
+
+    h3 { font-family: var(--font-d); font-size: 1.05rem; margin: 1.5rem 0 .6rem; color: var(--brown); }
+    p { color: var(--gray-700); margin-bottom: .6rem; font-size: .95rem; }
+    strong { color: var(--brown); }
+    code { font-family: var(--font-m); font-size: .8rem; background: var(--gray-200); color: var(--brown); padding: 1px 5px; border-radius: 3px; }
+
+    /* ─── GRID ─── */
+    .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+    @media (max-width: 680px) { .g2, .g3 { grid-template-columns: 1fr; } }
+
+    /* ─── CARD ─── */
+    .card { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--rl); padding: 1.25rem 1.5rem; }
+    .card-t { border-left: 4px solid var(--teal); }
+    .card-a { border-left: 4px solid var(--amber); }
+    .card-c { border-left: 4px solid var(--coral); }
+    .card-b { border-left: 4px solid var(--brown); }
+    .card h4 { font-family: var(--font-d); font-size: .95rem; margin-bottom: .5rem; }
+
+    /* ─── BADGE ─── */
+    .badge { display: inline-block; font-family: var(--font-m); font-size: .65rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 4px; margin-bottom: .4rem; }
+    .bt { background: #d4f4f0; color: #0f6b60; }
+    .ba { background: #fef3dc; color: #9a6200; }
+    .bc { background: #fde8e8; color: #a01a18; }
+    .bb { background: #e8d8cc; color: var(--brown); }
+    .bg { background: var(--gray-200); color: var(--gray-700); }
+
+    /* ─── CODE BLOCK ─── */
+    pre { background: #1e120a; color: #f5efe6; border-radius: var(--r); padding: 1.25rem; overflow-x: auto; font-family: var(--font-m); font-size: .78rem; line-height: 1.7; margin: .5rem 0 1rem; }
+    pre code { background: none; color: inherit; padding: 0; }
+    .cm { color: #8a7060; } .kw { color: var(--amber); } .st { color: #98e0b0; } .fn { color: #7eb8f7; } .nm { color: #f4a228; }
+
+    /* ─── CALLOUT ─── */
+    .callout { border-radius: var(--r); padding: 1rem 1.5rem; margin: 1rem 0; font-size: .9rem; }
+    .cw { background: #fef7e8; border-left: 4px solid var(--amber); color: #6b4800; }
+    .ci { background: #e8f7f6; border-left: 4px solid var(--teal); color: #0f4f49; }
+    .cd { background: #fdecea; border-left: 4px solid var(--coral); color: #7a1210; }
+    .callout strong { color: inherit; }
+
+    /* ─── FLOW ─── */
+    .flow { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin: 1rem 0; }
+    .fs { background: var(--white); border: 1.5px solid var(--gray-200); border-radius: var(--r); padding: .6rem 1rem; font-size: .78rem; text-align: center; flex: 1; min-width: 80px; }
+    .fs .fl { font-family: var(--font-m); font-size: .62rem; color: var(--teal); text-transform: uppercase; letter-spacing: .08em; display: block; margin-bottom: 2px; }
+    .fa { display: flex; align-items: center; padding: 0 .3rem; color: var(--gray-400); font-size: 1rem; }
+
+    /* ─── TABLE ─── */
+    table { width: 100%; border-collapse: collapse; font-size: .87rem; margin: .5rem 0 1.25rem; }
+    thead th { background: var(--brown); color: var(--cream); font-family: var(--font-m); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; padding: .7rem 1rem; text-align: left; }
+    tbody tr:nth-child(even) { background: var(--gray-50); }
+    tbody td { padding: .65rem 1rem; border-bottom: 1px solid var(--gray-200); color: var(--gray-700); vertical-align: top; }
+    tbody td:first-child { font-family: var(--font-m); font-size: .78rem; color: var(--brown); font-weight: 500; }
+    .right { text-align: right; }
+    .bold-row td { font-weight: 600; color: var(--brown) !important; font-family: var(--font-b) !important; font-size: .9rem !important; }
+
+    /* ─── ARCH ─── */
+    .arch { background: #1e120a; border-radius: var(--rl); padding: 1.5rem; color: var(--cream); font-family: var(--font-m); font-size: .76rem; line-height: 2; overflow-x: auto; }
+    .al { color: var(--amber); font-weight: 500; } .ab { color: #98e0b0; } .aa { color: var(--gray-500); } .an { color: #8a7060; }
+
+    /* ─── CHECKLIST ─── */
+    ul.ck { list-style: none; display: flex; flex-direction: column; gap: .3rem; }
+    ul.ck li { display: flex; align-items: flex-start; gap: .6rem; font-size: .9rem; color: var(--gray-700); }
+    ul.ck li::before { content: '☐'; color: var(--teal); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ───────────────────────────────────────────────
+       QUOTE / INVOICE STYLES
+    ─────────────────────────────────────────────── */
+    .quote-wrap {
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--rl);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .quote-header {
+      background: var(--brown);
+      color: var(--cream);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    .quote-from { font-size: .9rem; }
+    .quote-from strong { display: block; font-family: var(--font-d); font-size: 1.2rem; color: var(--amber); margin-bottom: .25rem; }
+    .quote-from span { color: var(--gray-400); font-size: .8rem; }
+    .quote-num { text-align: right; font-family: var(--font-m); font-size: .72rem; color: var(--gray-400); }
+    .quote-num strong { display: block; font-size: 1.4rem; color: var(--cream); font-family: var(--font-d); letter-spacing: -.02em; margin-bottom: .2rem; }
+
+    .quote-parties {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--gray-200);
+    }
+    @media (max-width: 580px) { .quote-parties { grid-template-columns: 1fr; } }
+    .quote-party { background: var(--gray-50); padding: 1.25rem 2rem; }
+    .quote-party-label { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-500); margin-bottom: .4rem; }
+    .quote-party-name { font-family: var(--font-d); font-size: 1.05rem; font-weight: 700; margin-bottom: .2rem; }
+    .quote-party p { font-size: .82rem; margin: 0; line-height: 1.5; }
+
+    .quote-scope {
+      padding: 2rem 2.5rem;
+      border-bottom: 1.5px solid var(--gray-200);
+    }
+    .scope-label { font-family: var(--font-m); font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; color: var(--gray-500); margin-bottom: .75rem; }
+
+    /* Line items table inside quote */
+    .li-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .li-table thead th {
+      background: var(--gray-100);
+      color: var(--brown);
+      font-family: var(--font-m);
+      font-size: .66rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .6rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--gray-200);
+    }
+    .li-table thead th.right { text-align: right; }
+    .li-table tbody td { padding: .85rem 1rem; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: top; }
+    .li-table tbody td:first-child { font-weight: 500; color: var(--brown); }
+    .li-table tbody td.right { text-align: right; font-family: var(--font-m); color: var(--brown); }
+    .li-table tbody td.hrs { text-align: center; font-family: var(--font-m); font-size: .8rem; color: var(--gray-500); }
+    .li-phase { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .08em; color: var(--teal); margin-top: .2rem; display: block; }
+    .li-desc { font-size: .8rem; color: var(--gray-500); margin-top: .2rem; }
+    .li-table tfoot td { padding: .65rem 1rem; font-size: .85rem; }
+    .li-table tfoot .subtotal td { border-top: 1.5px solid var(--gray-200); color: var(--gray-700); }
+    .li-table tfoot .total-row td { border-top: 2px solid var(--brown); background: var(--brown); color: var(--cream); font-weight: 700; font-size: 1rem; }
+    .li-table tfoot .total-row td.right { font-family: var(--font-m); font-size: 1.1rem; }
+
+    .quote-footer-strip {
+      background: var(--gray-100);
+      padding: 1.5rem 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) { .quote-footer-strip { grid-template-columns: 1fr; } }
+    .qf-item label { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-500); display: block; margin-bottom: .2rem; }
+    .qf-item span { font-size: .88rem; color: var(--brown); font-weight: 500; }
+
+    .quote-terms {
+      padding: 1.5rem 2.5rem;
+      border-top: 1.5px solid var(--gray-200);
+      font-size: .8rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+    }
+    .quote-terms strong { color: var(--brown); font-size: .82rem; }
+
+    .quote-sign {
+      padding: 1.5rem 2.5rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      border-top: 1.5px solid var(--gray-200);
+    }
+    @media (max-width: 580px) { .quote-sign { grid-template-columns: 1fr; } }
+    .sign-block label { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--gray-500); display: block; margin-bottom: .5rem; }
+    .sign-line { border-bottom: 1.5px solid var(--gray-400); height: 2.5rem; margin-bottom: .3rem; }
+    .sign-block span { font-size: .78rem; color: var(--gray-500); }
+
+    /* ─── PHASE TIMELINE ─── */
+    .timeline { display: flex; flex-direction: column; gap: 0; margin: 1rem 0; }
+    .tl-item { display: flex; gap: 1rem; }
+    .tl-rail { display: flex; flex-direction: column; align-items: center; }
+    .tl-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--teal); flex-shrink: 0; margin-top: 4px; }
+    .tl-line { width: 2px; background: var(--gray-200); flex: 1; min-height: 1rem; }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-content { padding-bottom: 1.25rem; }
+    .tl-phase { font-family: var(--font-m); font-size: .65rem; text-transform: uppercase; letter-spacing: .1em; color: var(--teal); }
+    .tl-title { font-family: var(--font-d); font-size: .95rem; font-weight: 700; margin-bottom: .2rem; }
+    .tl-body { font-size: .84rem; color: var(--gray-700); }
+
+    /* ─── FOOTER ─── */
+    .doc-footer { text-align: center; padding: 1.5rem; border-top: 2px solid var(--gray-200); color: var(--gray-500); font-size: .75rem; font-family: var(--font-m); }
+    .doc-footer strong { color: var(--brown); }
+
+    /* ─── PRINT ─── */
+    @media print {
+      body { background: white; }
+      .page { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-top">
+    <div>
+      <p class="cover-brand">Bachata Bakery · Project Proposal</p>
+      <h1>Cinnamon Roll<br>Order System</h1>
+      <p class="cover-tagline">Time-gated, cap-enforced pre-order form with Square payment integration — built for Hostinger.</p>
+    </div>
+    <div class="cover-badge">
+      PROPOSAL REF<br>
+      <span>BB-CRF-2026</span>
+      VERSION 2.0
+    </div>
+  </div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><div class="cover-meta-label">Prepared by</div><div class="cover-meta-val">Calvin Daniel</div></div>
+    <div class="cover-meta-item"><div class="cover-meta-label">Client</div><div class="cover-meta-val">Bachata Bakery</div></div>
+    <div class="cover-meta-item"><div class="cover-meta-label">Date</div><div class="cover-meta-val">April 2026</div></div>
+    <div class="cover-meta-item"><div class="cover-meta-label">Payment</div><div class="cover-meta-val">Square Only</div></div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- ══════════ S1: OVERVIEW ══════════ -->
+  <section class="section" id="s1">
+    <div class="sh"><span class="sh-num">01</span><h2>System Overview</h2></div>
+    <p>Bachata Bakery's Cinnamon Roll Order Form is a <strong>time-gated, cap-enforced pre-order system</strong> with Square card payment integration. Customers order online during a defined weekly window, pay immediately via credit or debit card, and the bakery closes the form automatically once capacity is reached — with zero manual intervention needed.</p>
+
+    <div class="g3" style="margin-top:1.25rem;">
+      <div class="card card-t">
+        <span class="badge bt">Rule 1</span>
+        <h4>🗓 Time Gate</h4>
+        <p>Orders accepted <strong>Friday 12:00 AM – Sunday 11:59 PM</strong> only. Outside this window the form shows a live countdown to next opening.</p>
+      </div>
+      <div class="card card-a">
+        <span class="badge ba">Rule 2</span>
+        <h4>📦 Dual Cap</h4>
+        <p>Form closes when <strong>100 rolls are sold</strong> OR <strong>50 customer orders</strong> are placed — whichever comes first.</p>
+      </div>
+      <div class="card card-b">
+        <span class="badge bb">Rule 3</span>
+        <h4>💳 Square Only</h4>
+        <p>All payments processed via <strong>Square Payments API</strong>. Cards charged immediately on submission. No partial holds, no manual verification.</p>
+      </div>
+    </div>
+
+    <div class="callout ci" style="margin-top:1.25rem;">
+      <strong>✅ Simplification from v1:</strong> By removing Zelle, every order is either <em>paid</em> or <em>declined</em> — no pending states, no cron cleanup jobs, no admin verification workflow. This cuts complexity significantly and gives the bakery clean, real-time fulfillment data.
+    </div>
+  </section>
+
+  <!-- ══════════ S2: ARCHITECTURE ══════════ -->
+  <section class="section" id="s2">
+    <div class="sh"><span class="sh-num">02</span><h2>System Architecture</h2></div>
+    <div class="arch">
+<span class="al">┌───────────────── CUSTOMER BROWSER ──────────────────────────────────────┐</span>
+<span class="ab">│  index.html · styles.css · form.js                                      │</span>
+<span class="ab">│                                                                          │</span>
+<span class="ab">│  1. Page load → GET /api/status.php                                      │</span>
+<span class="ab">│     └─ { open, next_open, rolls_remaining, orders_remaining }            │</span>
+<span class="ab">│                                                                          │</span>
+<span class="ab">│  2. If open=true → render order form                                     │</span>
+<span class="ab">│     ├─ Customer fills form fields                                        │</span>
+<span class="ab">│     └─ Square Web Payments SDK renders card input (PCI-compliant)        │</span>
+<span class="ab">│                                                                          │</span>
+<span class="ab">│  3. Submit → SDK tokenizes card → POST /api/order.php                   │</span>
+<span class="ab">│     └─ { nonce, name, email, phone, quantity, variant }                 │</span>
+<span class="al">└─────────────────────────────────────────────────────────────────────────┘</span>
+                              <span class="aa">│</span>
+                              <span class="aa">▼</span>
+<span class="al">┌───────────────── HOSTINGER PHP BACKEND ─────────────────────────────────┐</span>
+<span class="ab">│  /api/order.php                                                          │</span>
+<span class="ab">│  ├─ A. Verify time window (server timezone — authoritative)             │</span>
+<span class="ab">│  ├─ B. Atomic cap check with FOR UPDATE row lock                        │</span>
+<span class="ab">│  ├─ C. POST nonce → Square Payments API → charge card                  │</span>
+<span class="ab">│  │    ├─ APPROVED → INSERT order (status: paid), commit transaction     │</span>
+<span class="ab">│  │    └─ DECLINED → rollback, return error to customer                 │</span>
+<span class="ab">│  └─ D. Send confirmation email via PHPMailer                            │</span>
+<span class="al">└──────────┬──────────────────────────────────┬───────────────────────────┘</span>
+           <span class="aa">▼</span>                                <span class="aa">▼</span>
+<span class="al">┌─── MySQL Database ───┐</span>              <span class="al">┌──── Square Payments API ────────────┐</span>
+<span class="ab">│  orders              │</span>              <span class="ab">│  POST /v2/payments                 │</span>
+<span class="ab">│  order_caps          │</span>              <span class="ab">│  Returns payment_id + status       │</span>
+<span class="ab">│  (2 tables only)     │</span>              <span class="al">└────────────────────────────────────┘</span>
+<span class="al">└──────────────────────┘</span>                         <span class="aa">│ webhook</span>
+           <span class="aa">▼</span>                                     <span class="aa">▼</span>
+<span class="al">┌─── OWNER DASHBOARD ──────────────────────────────────────────────────────┐</span>
+<span class="ab">│  /admin/  (password protected)                                           │</span>
+<span class="ab">│  ├─ Live cap counters + weekend revenue                                  │</span>
+<span class="ab">│  ├─ Full order list (sortable, exportable)                               │</span>
+<span class="ab">│  └─ Force close / override cap controls                                  │</span>
+<span class="al">└──────────────────────────────────────────────────────────────────────────┘</span>
+    </div>
+  </section>
+
+  <!-- ══════════ S3: TECH STACK ══════════ -->
+  <section class="section" id="s3">
+    <div class="sh"><span class="sh-num">03</span><h2>Tech Stack</h2></div>
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>HTML5 / Vanilla JS / CSS3</td><td>Calvin's preferred lightweight stack; zero framework overhead</td></tr>
+        <tr><td>Payment UI</td><td>Square Web Payments SDK</td><td>PCI-compliant card input rendered by Square — card data never touches your server</td></tr>
+        <tr><td>Backend</td><td>PHP 8.x</td><td>Native on Hostinger; no additional server config required</td></tr>
+        <tr><td>Database</td><td>MySQL 8.x (via Hostinger)</td><td>Persistent cap tracking; atomic transactions for race condition prevention</td></tr>
+        <tr><td>Payments</td><td>Square Payments API</td><td>Real-time card charge, webhook confirmation, sandbox testing available</td></tr>
+        <tr><td>Email</td><td>PHPMailer + Hostinger SMTP</td><td>Order confirmations; free via existing Hostinger mail</td></tr>
+        <tr><td>Admin</td><td>PHP (session-protected)</td><td>Owner dashboard for live order monitoring and cap overrides</td></tr>
+        <tr><td>Hosting</td><td>Hostinger (existing)</td><td>No new hosting cost; SSL already required for Square</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ══════════ S4: KEY LOGIC ══════════ -->
+  <section class="section" id="s4">
+    <div class="sh"><span class="sh-num">04</span><h2>Core Logic</h2></div>
+
+    <h3>Time Gate (Server-Side Enforcement)</h3>
+    <p>The backend is always authoritative. Even if JavaScript is bypassed, a direct POST to the API will be rejected outside the window.</p>
+    <pre><code><span class="cm">// api/helpers/time_gate.php — uses bakery's configured timezone</span>
+<span class="kw">function</span> <span class="fn">isFormOpen</span>(): bool {
+    $tz  = <span class="kw">new</span> DateTimeZone(<span class="st">'America/New_York'</span>);
+    $now = <span class="kw">new</span> DateTime(<span class="st">'now'</span>, $tz);
+    $dow = (int) $now->format(<span class="st">'N'</span>);  <span class="cm">// 5=Fri, 6=Sat, 7=Sun</span>
+    $h   = (int) $now->format(<span class="st">'G'</span>);
+    $m   = (int) $now->format(<span class="st">'i'</span>);
+
+    <span class="kw">if</span> ($dow === <span class="nm">5</span> || $dow === <span class="nm">6</span>) <span class="kw">return true</span>;
+    <span class="kw">if</span> ($dow === <span class="nm">7</span>  && ($h < <span class="nm">23</span> || ($h === <span class="nm">23</span> && $m <= <span class="nm">59</span>))) <span class="kw">return true</span>;
+    <span class="kw">return false</span>;
+}</code></pre>
+
+    <h3>Atomic Cap Check + Square Charge</h3>
+    <p>The cap is checked and the order is inserted in a <strong>single database transaction with a row lock</strong>, preventing two customers from simultaneously purchasing the last slot.</p>
+    <pre><code><span class="cm">// api/order.php — all-or-nothing atomic flow</span>
+$pdo->beginTransaction();
+
+$cap = $pdo->prepare(<span class="st">"SELECT rolls_sold, orders_placed FROM order_caps WHERE window_id = :wid FOR UPDATE"</span>);
+$cap->execute([<span class="st">':wid'</span> => $windowId]);
+$row = $cap->fetch();
+
+<span class="kw">if</span> ($row[<span class="st">'orders_placed'</span>] >= <span class="nm">50</span>)             jsonError(<span class="st">'sold_out_orders'</span>);
+<span class="kw">if</span> ($row[<span class="st">'rolls_sold'</span>] + $qty > <span class="nm">100</span>)          jsonError(<span class="st">'sold_out_rolls'</span>);
+
+<span class="cm">// Cap check passed — charge the card via Square</span>
+$charge = squareCharge($nonce, $amountCents, $idempotencyKey);
+
+<span class="kw">if</span> ($charge[<span class="st">'status'</span>] !== <span class="st">'COMPLETED'</span>) {
+    $pdo->rollBack();
+    jsonError(<span class="st">'card_declined'</span>, $charge[<span class="st">'errors'</span>][0][<span class="st">'detail'</span>]);
+}
+
+<span class="cm">// Both cap and payment cleared — commit everything</span>
+$pdo->prepare(<span class="st">"UPDATE order_caps SET rolls_sold = rolls_sold + :q, orders_placed = orders_placed + 1 WHERE window_id = :wid"</span>)->execute([...]);
+$pdo->prepare(<span class="st">"INSERT INTO orders (...) VALUES (...)"</span>)->execute([...]);
+$pdo->commit();
+
+sendConfirmationEmail($customer, $orderRef);</code></pre>
+
+    <h3>Database Schema (2 Tables)</h3>
+    <div class="g2">
+      <div class="card card-b">
+        <h4>Table: <code>orders</code></h4>
+        <pre style="margin:0;font-size:.7rem;"><code>id               INT AI PK
+order_ref        VARCHAR(12) UNIQUE
+window_id        DATE
+customer_name    VARCHAR(120)
+customer_email   VARCHAR(180)
+customer_phone   VARCHAR(20)
+quantity         TINYINT UNSIGNED
+product_variant  VARCHAR(80)
+pickup_date      DATE
+special_notes    TEXT
+payment_status   ENUM(paid, failed)
+square_payment_id VARCHAR(80)
+amount_cents     INT UNSIGNED
+created_at       DATETIME</code></pre>
+      </div>
+      <div class="card card-t">
+        <h4>Table: <code>order_caps</code></h4>
+        <pre style="margin:0;font-size:.7rem;"><code>window_id        DATE PK
+rolls_sold       TINYINT UNSIGNED
+orders_placed    TINYINT UNSIGNED
+rolls_max        TINYINT DEFAULT 100
+orders_max       TINYINT DEFAULT 50
+updated_at       DATETIME</code></pre>
+        <p style="margin-top:.75rem; font-size:.8rem;">One row per weekend. <code>window_id</code> = the Friday date. Cap overrides are editable by the owner without code changes.</p>
+      </div>
+    </div>
+
+    <h3>Square Payment Flow</h3>
+    <div class="flow">
+      <div class="fs"><span class="fl">1</span>Customer fills form</div>
+      <div class="fa">→</div>
+      <div class="fs"><span class="fl">2</span>SDK tokenizes card</div>
+      <div class="fa">→</div>
+      <div class="fs"><span class="fl">3</span>POST token to server</div>
+      <div class="fa">→</div>
+      <div class="fs"><span class="fl">4</span>Cap check passes</div>
+      <div class="fa">→</div>
+      <div class="fs"><span class="fl">5</span>Square charges card</div>
+      <div class="fa">→</div>
+      <div class="fs"><span class="fl">6</span>Order saved + email sent</div>
+    </div>
+  </section>
+
+  <!-- ══════════ S5: CONTINGENCIES ══════════ -->
+  <section class="section" id="s5">
+    <div class="sh"><span class="sh-num">05</span><h2>Contingency Planning</h2></div>
+    <div class="g2">
+      <div class="card card-c">
+        <span class="badge bc">Scenario</span>
+        <h4>Card Declined by Square</h4>
+        <p>Transaction rolls back atomically. No order record is created. Cap is not incremented. Customer sees a plain-English decline message with suggestion to retry a different card.</p>
+      </div>
+      <div class="card card-c">
+        <span class="badge bc">Scenario</span>
+        <h4>PHP Times Out After Charge</h4>
+        <p>Square's webhook fires <code>payment.completed</code>. Webhook handler reconciles the orphaned charge by finding the Square payment ID and creating the missing order record. Owner gets an email alert.</p>
+      </div>
+      <div class="card card-a">
+        <span class="badge ba">Scenario</span>
+        <h4>Two Customers Hit Cap Simultaneously</h4>
+        <p><code>FOR UPDATE</code> row lock serializes the requests. Second request blocks, reads the updated cap, and returns a sold-out error. Guaranteed no oversell.</p>
+      </div>
+      <div class="card card-a">
+        <span class="badge ba">Scenario</span>
+        <h4>Double-Click Submit</h4>
+        <p>The submit button is disabled immediately on first click. The idempotency key (unique per session) also prevents Square from charging twice even if two identical requests reach the API.</p>
+      </div>
+      <div class="card card-t">
+        <span class="badge bt">Scenario</span>
+        <h4>Owner Wants to Close Early</h4>
+        <p>Admin dashboard has a <strong>Force Close</strong> toggle. Sets a DB flag read by <code>status.php</code>. Form closes within 60 seconds on all active customer sessions. Fully reversible.</p>
+      </div>
+      <div class="card card-t">
+        <span class="badge bt">Scenario</span>
+        <h4>Owner Wants to Raise/Lower Cap</h4>
+        <p>The <code>order_caps</code> table stores <code>rolls_max</code> and <code>orders_max</code> per weekend. Admin dashboard exposes editable fields — no code changes or deployments needed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ S6: QA ══════════ -->
+  <section class="section" id="s6">
+    <div class="sh"><span class="sh-num">06</span><h2>QA Test Plan</h2></div>
+    <p>Testing uses Square's Sandbox environment with provided test card numbers. No real money moves during QA. One <strong>$0.01 live charge</strong> is made at final pre-launch verification, then immediately refunded.</p>
+
+    <h3>Time Gate Tests</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Condition</th><th>Expected</th></tr></thead>
+      <tbody>
+        <tr><td>TG-01</td><td>Thursday 11:58 PM server time</td><td>Form closed; countdown to Friday visible</td></tr>
+        <tr><td>TG-02</td><td>Friday 12:01 AM server time</td><td>Form auto-opens without page reload</td></tr>
+        <tr><td>TG-03</td><td>Sunday 11:58 PM server time</td><td>Form open</td></tr>
+        <tr><td>TG-04</td><td>Monday 12:01 AM server time</td><td>Form closed; "See you next Friday" message</td></tr>
+        <tr><td>TG-05</td><td>Direct POST to /api/order.php on Thursday</td><td>Backend returns <code>form_closed</code>; no order created</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cap Enforcement Tests</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Condition</th><th>Expected</th></tr></thead>
+      <tbody>
+        <tr><td>CAP-01</td><td>50th order submitted</td><td>Accepted; form closes on next status poll</td></tr>
+        <tr><td>CAP-02</td><td>51st order submitted</td><td>Rejected with <code>sold_out_orders</code>; no charge</td></tr>
+        <tr><td>CAP-03</td><td>94 rolls sold; customer orders 7</td><td>Rejected with <code>sold_out_rolls</code>; no charge</td></tr>
+        <tr><td>CAP-04</td><td>94 rolls sold; customer orders 6</td><td>Accepted; 100 total; form closes</td></tr>
+        <tr><td>CAP-05</td><td>Two simultaneous last-slot submissions</td><td>One succeeds; one gets sold-out error (parallel cURL test)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Square Payment Tests</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Square Test Card</th><th>Expected</th></tr></thead>
+      <tbody>
+        <tr><td>SQ-01</td><td><code>4111 1111 1111 1111</code> (Visa ✓)</td><td>Order created; status=paid; confirmation email received</td></tr>
+        <tr><td>SQ-02</td><td><code>4000 0000 0000 0002</code> (Declined)</td><td>Error shown; NO order record; cap not incremented</td></tr>
+        <tr><td>SQ-03</td><td>Valid card; API returns 500</td><td>"Processing unavailable" message; no charge; no record</td></tr>
+        <tr><td>SQ-04</td><td>Valid; script times out post-charge</td><td>Webhook reconciles order; owner alert email sent</td></tr>
+        <tr><td>SQ-05</td><td>Double-click submit on valid card</td><td>Single charge only; single order record</td></tr>
+        <tr><td>SQ-06</td><td>Invalid card number format</td><td>Square SDK shows inline field error; server never called</td></tr>
+        <tr><td>SQ-07</td><td>Live $0.01 charge (pre-launch)</td><td>Real charge confirmed; webhook fires; refund immediately</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Pre-Launch Checklist</h3>
+    <ul class="ck">
+      <li>SSL certificate active on Hostinger domain (required by Square)</li>
+      <li>Square Production credentials loaded in <code>.env</code>; not in version control</li>
+      <li>Live $0.01 Square charge completed and refunded</li>
+      <li>Square webhook endpoint registered and signature validation verified</li>
+      <li>Order confirmation email received in inbox (not spam folder)</li>
+      <li>Admin dashboard login tested; cap counters showing correctly</li>
+      <li>Form tested on iOS Safari and Android Chrome</li>
+      <li>Cap boundary test: 49 orders → 50th → 51st</li>
+      <li><code>.env</code> file returns 403 when accessed via browser</li>
+      <li>All 17 QA test cases above passing</li>
+    </ul>
+  </section>
+
+  <!-- ══════════ QUOTE ══════════ -->
+  <section class="section" id="quote">
+    <div class="sh"><span class="sh-num">07</span><h2>Project Quote & Invoice</h2></div>
+
+    <div class="quote-wrap">
+
+      <!-- Quote Header -->
+      <div class="quote-header">
+        <div class="quote-from">
+          <strong>Calvin Daniel</strong>
+          <span>Full-Stack Web Developer · Freelance<br>calvindaniel.dev · hello@calvindaniel.dev</span>
+        </div>
+        <div class="quote-num">
+          PROPOSAL / QUOTE<br>
+          <strong>BB-CRF-2026</strong>
+          Issued: April 2026<br>
+          Valid 30 days
+        </div>
+      </div>
+
+      <!-- Parties -->
+      <div class="quote-parties">
+        <div class="quote-party">
+          <div class="quote-party-label">Bill From</div>
+          <div class="quote-party-name">Calvin Daniel</div>
+          <p>Full-Stack Web Developer<br>Freelance · Hostinger-hosted projects<br>HTML · CSS · JS · PHP · MySQL</p>
+        </div>
+        <div class="quote-party">
+          <div class="quote-party-label">Bill To</div>
+          <div class="quote-party-name">Bachata Bakery</div>
+          <p>Cinnamon Roll Pre-Order System<br>Square-integrated order form<br>Time-gated · Cap-enforced</p>
+        </div>
+      </div>
+
+      <!-- Scope Description -->
+      <div class="quote-scope">
+        <div class="scope-label">Project Scope Summary</div>
+        <p style="font-size:.88rem; color:var(--gray-700); margin:0;">
+          Design and development of a time-gated online order form for Bachata Bakery's weekly cinnamon roll drop. The system enforces a Friday–Sunday sales window and a dual cap (100 rolls / 50 orders), processes payments immediately via Square's API, and provides the owner with a live admin dashboard. All work performed on the client's existing Hostinger infrastructure.
+        </p>
+      </div>
+
+      <!-- Line Items -->
+      <table class="li-table">
+        <thead>
+          <tr>
+            <th style="width:40%">Deliverable</th>
+            <th>Description</th>
+            <th class="right" style="width:60px">Hrs</th>
+            <th class="right" style="width:80px">Rate</th>
+            <th class="right" style="width:90px">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              Database Setup
+              <span class="li-phase">Phase 1 — Foundation</span>
+            </td>
+            <td>
+              MySQL schema creation (<code>orders</code> + <code>order_caps</code> tables), indexes, PDO connection class, <code>.env</code> config file, <code>.htaccess</code> security rules.
+              <div class="li-desc">Deliverable: Working DB on Hostinger + connection layer</div>
+            </td>
+            <td class="hrs">2</td>
+            <td class="right">$85</td>
+            <td class="right">$170</td>
+          </tr>
+          <tr>
+            <td>
+              Time Gate + Status API
+              <span class="li-phase">Phase 2 — Backend Core</span>
+            </td>
+            <td>
+              <code>/api/status.php</code> endpoint returning open/closed state, cap counters, next open timestamp. Time gate helper with bakery timezone config. Force-close flag support.
+              <div class="li-desc">Deliverable: Polled by frontend every 60s; authoritative gate</div>
+            </td>
+            <td class="hrs">2</td>
+            <td class="right">$85</td>
+            <td class="right">$170</td>
+          </tr>
+          <tr>
+            <td>
+              Order Form UI
+              <span class="li-phase">Phase 3 — Frontend</span>
+            </td>
+            <td>
+              Mobile-first order form (HTML/CSS/JS) with Bachata Bakery brand styling. Fields: name, email, phone, quantity, variant, pickup preference, notes. Live countdown timer, sold-out state, auto-unlock when window opens. Real-time remaining slots display.
+              <div class="li-desc">Deliverable: Fully responsive form; tested iOS + Android</div>
+            </td>
+            <td class="hrs">5</td>
+            <td class="right">$85</td>
+            <td class="right">$425</td>
+          </tr>
+          <tr>
+            <td>
+              Square SDK Integration
+              <span class="li-phase">Phase 4 — Payment Frontend</span>
+            </td>
+            <td>
+              Square Web Payments SDK implementation — card input mount, tokenization flow, error handling, submit button state management (disabled on click, re-enabled on error). Sandbox + production env switching.
+              <div class="li-desc">Deliverable: PCI-compliant card capture in form</div>
+            </td>
+            <td class="hrs">2.5</td>
+            <td class="right">$85</td>
+            <td class="right">$212.50</td>
+          </tr>
+          <tr>
+            <td>
+              Square Payments API Backend
+              <span class="li-phase">Phase 5 — Payment Backend</span>
+            </td>
+            <td>
+              <code>/api/order.php</code>: atomic cap check (FOR UPDATE row lock), Square API charge via cURL, transaction commit/rollback, idempotency key generation, order reference code creation, error response mapping.
+              <div class="li-desc">Deliverable: Charge + order creation in one atomic operation</div>
+            </td>
+            <td class="hrs">3.5</td>
+            <td class="right">$85</td>
+            <td class="right">$297.50</td>
+          </tr>
+          <tr>
+            <td>
+              Square Webhook Handler
+              <span class="li-phase">Phase 6 — Reliability</span>
+            </td>
+            <td>
+              <code>/api/webhook/square.php</code>: HMAC-SHA256 signature validation, <code>payment.completed</code> / <code>payment.failed</code> event handling, orphaned charge reconciliation, owner alert email on edge cases.
+              <div class="li-desc">Deliverable: Edge-case safety net for timeout scenarios</div>
+            </td>
+            <td class="hrs">2</td>
+            <td class="right">$85</td>
+            <td class="right">$170</td>
+          </tr>
+          <tr>
+            <td>
+              Email Confirmations
+              <span class="li-phase">Phase 7 — Communications</span>
+            </td>
+            <td>
+              PHPMailer setup with Hostinger SMTP. Branded order confirmation email to customer (order ref, quantity, amount charged, pickup info). Owner notification email on each new order. HTML email templates.
+              <div class="li-desc">Deliverable: Two email templates; spam-tested</div>
+            </td>
+            <td class="hrs">2</td>
+            <td class="right">$85</td>
+            <td class="right">$170</td>
+          </tr>
+          <tr>
+            <td>
+              Owner Admin Dashboard
+              <span class="li-phase">Phase 8 — Operations</span>
+            </td>
+            <td>
+              Password-protected <code>/admin/</code> panel: live cap counters (rolls sold, orders placed, revenue), full order table with search, Force Close toggle, cap override fields per weekend, CSV export of orders.
+              <div class="li-desc">Deliverable: Functional owner control panel</div>
+            </td>
+            <td class="hrs">4</td>
+            <td class="right">$85</td>
+            <td class="right">$340</td>
+          </tr>
+          <tr>
+            <td>
+              QA Testing
+              <span class="li-phase">Phase 9 — Quality Assurance</span>
+            </td>
+            <td>
+              All 17 test cases from the QA plan: time gate (5 tests), cap enforcement (5 tests), Square payment (7 tests). Sandbox testing with Square test cards. Race condition simulation. Cross-browser + mobile device testing.
+              <div class="li-desc">Deliverable: Signed-off test results document</div>
+            </td>
+            <td class="hrs">3</td>
+            <td class="right">$85</td>
+            <td class="right">$255</td>
+          </tr>
+          <tr>
+            <td>
+              Deployment & Go-Live
+              <span class="li-phase">Phase 10 — Launch</span>
+            </td>
+            <td>
+              Production deployment to Hostinger. SSL verification. Square Production credentials swap. Live $0.01 test charge + refund. Webhook endpoint registration in Square dashboard. Pre-launch checklist sign-off.
+              <div class="li-desc">Deliverable: Live, verified system on production domain</div>
+            </td>
+            <td class="hrs">1.5</td>
+            <td class="right">$85</td>
+            <td class="right">$127.50</td>
+          </tr>
+          <tr>
+            <td>
+              Documentation & Handoff
+              <span class="li-phase">Phase 11 — Closeout</span>
+            </td>
+            <td>
+              Owner's guide (PDF): how to use admin dashboard, how to read Square dashboard, how to update pricing, what to do if something goes wrong. Credential handoff. 30-day post-launch support window included.
+              <div class="li-desc">Deliverable: Owner's guide + 30-day support</div>
+            </td>
+            <td class="hrs">1.5</td>
+            <td class="right">$85</td>
+            <td class="right">$127.50</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="subtotal">
+            <td colspan="2" style="font-weight:600; color:var(--brown);">Subtotal — Development Work (29 hours)</td>
+            <td class="hrs" style="font-weight:700; color:var(--brown);">29</td>
+            <td></td>
+            <td class="right" style="font-weight:700; color:var(--brown); font-family:var(--font-m);">$2,465</td>
+          </tr>
+          <tr class="subtotal">
+            <td colspan="4" style="color:var(--gray-500); font-size:.82rem;">Square Processing Fees — collected per transaction, passed directly to Square (not Calvin's revenue)</td>
+            <td class="right" style="color:var(--gray-500); font-size:.82rem; font-family:var(--font-m);">2.6% + $0.10/txn</td>
+          </tr>
+          <tr class="subtotal">
+            <td colspan="4" style="color:var(--gray-500); font-size:.82rem;">Square Developer Account — free</td>
+            <td class="right" style="color:var(--gray-500); font-size:.82rem; font-family:var(--font-m);">$0.00</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="4" style="font-family:var(--font-d); font-size:1rem; font-weight:900; color:var(--amber);">TOTAL PROJECT INVESTMENT</td>
+            <td class="right" style="font-family:var(--font-m); font-size:1.2rem; color:var(--amber); letter-spacing:-.01em;">$2,465.00</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Footer Strip -->
+      <div class="quote-footer-strip">
+        <div class="qf-item"><label>Total Hours</label><span>29 hours</span></div>
+        <div class="qf-item"><label>Hourly Rate</label><span>$85 / hour</span></div>
+        <div class="qf-item"><label>Estimated Timeline</label><span>3–4 weeks</span></div>
+        <div class="qf-item"><label>Payment Schedule</label><span>50% upfront · 50% at launch</span></div>
+        <div class="qf-item"><label>Post-Launch Support</label><span>30 days included</span></div>
+        <div class="qf-item"><label>Quote Valid Until</label><span>May 7, 2026</span></div>
+      </div>
+
+      <!-- Terms -->
+      <div class="quote-terms">
+        <strong>Terms & Conditions</strong><br>
+        Payment is split 50% ($1,232.50) upon signed acceptance of this proposal and 50% ($1,232.50) upon deployment to production and client sign-off on the pre-launch checklist. Hourly rate of $85/hr applies to any out-of-scope additions requested during development. Square transaction processing fees (2.6% + $0.10 per transaction) are the client's responsibility and are paid directly to Square — they are not included in this quote. A Square Developer account is required and is free to create at developer.squareup.com. Hostinger hosting and domain renewal fees are the client's existing obligation and are not included. This proposal is valid for 30 days from the issue date.
+      </div>
+
+      <!-- Signature Block -->
+      <div class="quote-sign">
+        <div class="sign-block">
+          <label>Client Acceptance — Bachata Bakery</label>
+          <div class="sign-line"></div>
+          <span>Signature · Date</span>
+        </div>
+        <div class="sign-block">
+          <label>Contractor — Calvin Daniel</label>
+          <div class="sign-line"></div>
+          <span>Signature · Date</span>
+        </div>
+      </div>
+
+    </div><!-- /quote-wrap -->
+  </section>
+
+  <!-- ══════════ BUILD TIMELINE ══════════ -->
+  <section class="section" id="timeline">
+    <div class="sh"><span class="sh-num">08</span><h2>Estimated Build Timeline</h2></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-phase">Week 1</div>
+          <div class="tl-title">Foundation + Backend Core</div>
+          <div class="tl-body">Database schema, PDO layer, .env setup, time gate logic, /api/status.php endpoint, /api/order.php skeleton. Internal testing of gate and cap logic.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-phase">Week 2</div>
+          <div class="tl-title">Frontend + Square Integration</div>
+          <div class="tl-body">Order form UI (mobile-first, branded), Square Web Payments SDK integration, Square API backend, idempotency handling, webhook handler, full sandbox payment testing.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-phase">Week 3</div>
+          <div class="tl-title">Email + Admin Dashboard</div>
+          <div class="tl-body">PHPMailer setup, branded email templates (customer + owner), admin dashboard build, cap override controls, Force Close toggle, CSV export.</div>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+        <div class="tl-content">
+          <div class="tl-phase">Week 4</div>
+          <div class="tl-title">QA, Deployment & Handoff</div>
+          <div class="tl-body">All 17 QA test cases, cross-browser + mobile testing, production deployment, live $0.01 Square verification, pre-launch checklist sign-off, owner guide documentation.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /body -->
+
+<div class="doc-footer">
+  <strong>Bachata Bakery</strong> · Cinnamon Roll Order System · Proposal v2.0 · April 2026<br>
+  Prepared by Calvin Daniel · Square-only payment integration · Hostinger deployment
+</div>
+
+</div><!-- /page -->
+</body>
+</html>

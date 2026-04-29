@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>New Order — Bachata Bakery</title>
+</head>
+<body style="margin:0;padding:0;background-color:#EDE4D6;font-family:'DM Sans',Arial,sans-serif;">
+
+  <!-- Preheader -->
+  <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    New order {ORDER_REF} — {QUANTITY} roll(s) · {AMOUNT}
+  </span>
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background-color:#EDE4D6;padding:32px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- Card -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:580px;background-color:#FFFFFF;border-radius:16px;
+                      overflow:hidden;box-shadow:0 4px 24px rgba(59,26,8,0.10);">
+
+          <!-- ── HEADER ── -->
+          <tr>
+            <td style="background-color:#3B1A08;padding:28px 40px;text-align:center;">
+              <p style="margin:0 0 4px;font-size:11px;font-weight:700;color:#F4A228;
+                        text-transform:uppercase;letter-spacing:0.12em;">
+                Bachata Bakery — Owner Alert
+              </p>
+              <p style="margin:0;font-family:Georgia,'Times New Roman',serif;
+                        font-size:22px;font-weight:700;color:#F5EFE6;">
+                New Order Received
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── ORDER REF BANNER ── -->
+          <tr>
+            <td style="background-color:#F4A228;padding:16px 40px;text-align:center;">
+              <p style="margin:0;font-family:Georgia,'Times New Roman',serif;
+                        font-size:28px;font-weight:700;color:#3B1A08;letter-spacing:0.04em;">
+                {ORDER_REF}
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── BODY ── -->
+          <tr>
+            <td style="padding:32px 40px;">
+
+              <!-- Customer info -->
+              <p style="margin:0 0 12px;font-size:11px;font-weight:700;color:#7A5C44;
+                        text-transform:uppercase;letter-spacing:0.1em;">
+                Customer
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border:1.5px solid #D9CEBF;border-radius:10px;
+                            overflow:hidden;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;width:40%;border-bottom:1px solid #EDE4D6;">
+                    Name
+                  </td>
+                  <td style="padding:11px 20px;color:#3B1A08;font-size:15px;
+                             font-weight:600;border-bottom:1px solid #EDE4D6;">
+                    {CUSTOMER_NAME}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;border-bottom:1px solid #EDE4D6;">
+                    Email
+                  </td>
+                  <td style="padding:11px 20px;border-bottom:1px solid #EDE4D6;">
+                    <a href="mailto:{CUSTOMER_EMAIL}"
+                       style="color:#1A9E8F;font-size:15px;text-decoration:none;">
+                      {CUSTOMER_EMAIL}
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;font-weight:600;">
+                    Phone
+                  </td>
+                  <td style="padding:11px 20px;color:#3B1A08;font-size:15px;">
+                    {CUSTOMER_PHONE}
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Order details -->
+              <p style="margin:0 0 12px;font-size:11px;font-weight:700;color:#7A5C44;
+                        text-transform:uppercase;letter-spacing:0.1em;">
+                Order details
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border:1.5px solid #D9CEBF;border-radius:10px;
+                            overflow:hidden;margin-bottom:24px;">
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;width:40%;border-bottom:1px solid #EDE4D6;">
+                    Variety
+                  </td>
+                  <td style="padding:11px 20px;color:#3B1A08;font-size:15px;
+                             border-bottom:1px solid #EDE4D6;">
+                    {VARIANT}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;border-bottom:1px solid #EDE4D6;">
+                    Quantity
+                  </td>
+                  <td style="padding:11px 20px;color:#3B1A08;font-size:15px;
+                             font-weight:700;border-bottom:1px solid #EDE4D6;">
+                    {QUANTITY} roll(s)
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;border-bottom:1px solid #EDE4D6;">
+                    Pickup day
+                  </td>
+                  <td style="padding:11px 20px;color:#3B1A08;font-size:15px;
+                             border-bottom:1px solid #EDE4D6;">
+                    {PICKUP_DATE}
+                  </td>
+                </tr>
+                <tr style="border-top:2px solid #D9CEBF;">
+                  <td style="padding:13px 20px;background-color:#FEF5E7;color:#3B1A08;
+                             font-size:13px;font-weight:700;">
+                    Charged
+                  </td>
+                  <td style="padding:13px 20px;background-color:#FEF5E7;">
+                    <span style="font-family:Georgia,'Times New Roman',serif;
+                                 font-size:20px;font-weight:700;color:#3B1A08;">
+                      {AMOUNT}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Notes (if any) -->
+              {NOTES_BLOCK}
+
+              <!-- Weekend totals -->
+              <p style="margin:0 0 12px;font-size:11px;font-weight:700;color:#7A5C44;
+                        text-transform:uppercase;letter-spacing:0.1em;">
+                Weekend totals (after this order)
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border:1.5px solid #D9CEBF;border-radius:10px;
+                            overflow:hidden;margin-bottom:8px;">
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;width:40%;border-bottom:1px solid #EDE4D6;">
+                    Rolls sold
+                  </td>
+                  <td style="padding:11px 20px;border-bottom:1px solid #EDE4D6;">
+                    <span style="font-size:16px;font-weight:700;color:#3B1A08;">
+                      {ROLLS_SOLD}
+                    </span>
+                    <span style="font-size:13px;color:#7A5C44;">
+                      &nbsp;/ {ROLLS_MAX}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:11px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;border-bottom:1px solid #EDE4D6;">
+                    Orders placed
+                  </td>
+                  <td style="padding:11px 20px;border-bottom:1px solid #EDE4D6;">
+                    <span style="font-size:16px;font-weight:700;color:#3B1A08;">
+                      {ORDERS_PLACED}
+                    </span>
+                    <span style="font-size:13px;color:#7A5C44;">
+                      &nbsp;/ {ORDERS_MAX}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:13px 20px;background-color:#E6F6F4;color:#157E73;
+                             font-size:13px;font-weight:700;">
+                    Weekend revenue
+                  </td>
+                  <td style="padding:13px 20px;background-color:#E6F6F4;">
+                    <span style="font-family:Georgia,'Times New Roman',serif;
+                                 font-size:20px;font-weight:700;color:#157E73;">
+                      {WEEKEND_REVENUE}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ── -->
+          <tr>
+            <td style="background-color:#3B1A08;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:12px;color:rgba(245,239,230,0.55);">
+                Bachata Bakery internal notification &mdash; &copy; {YEAR}
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

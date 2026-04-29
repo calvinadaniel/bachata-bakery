@@ -1,0 +1,6 @@
+# AFTER running preflight.php:
+# 1. Delete setup/preflight.php
+# 2. Optionally delete this entire setup/ directory
+#
+# To lock down setup/ permanently after go-live, uncomment the line below:
+# Require all denied

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"G:/coding/Claude POC Projects/bachata-bakery/cinnamon-roll-order-form/index.html\")",
+      "Bash(explorer \"G:\\\\coding\\\\Claude POC Projects\\\\bachata-bakery\\\\cinnamon-roll-order-form\\\\index.html\")"
+    ]
+  }
+}

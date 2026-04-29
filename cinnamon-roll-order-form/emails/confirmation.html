@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Order Confirmed — Bachata Bakery</title>
+</head>
+<body style="margin:0;padding:0;background-color:#EDE4D6;font-family:'DM Sans',Arial,sans-serif;">
+
+  <!-- Preheader (hidden preview text) -->
+  <span style="display:none;max-height:0;overflow:hidden;mso-hide:all;">
+    Your cinnamon rolls are reserved — order {ORDER_REF} confirmed.
+  </span>
+
+  <!-- Wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="background-color:#EDE4D6;padding:32px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- Card -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:580px;background-color:#FFFFFF;border-radius:16px;
+                      overflow:hidden;box-shadow:0 4px 24px rgba(59,26,8,0.10);">
+
+          <!-- ── HEADER ── -->
+          <tr>
+            <td style="background-color:#3B1A08;padding:36px 40px;text-align:center;">
+              <p style="margin:0 0 4px;font-family:Georgia,'Times New Roman',serif;
+                        font-size:26px;font-weight:700;color:#F5EFE6;letter-spacing:0.01em;">
+                Bachata Bakery
+              </p>
+              <p style="margin:0;font-size:13px;color:#F4A228;font-style:italic;
+                        letter-spacing:0.04em;">
+                Handcrafted with sabor
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── HERO ── -->
+          <tr>
+            <td style="background-color:#1A9E8F;padding:28px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);
+                        text-transform:uppercase;letter-spacing:0.1em;">
+                Order confirmed
+              </p>
+              <p style="margin:0;font-family:Georgia,'Times New Roman',serif;
+                        font-size:36px;font-weight:700;color:#FFFFFF;letter-spacing:0.04em;">
+                {ORDER_REF}
+              </p>
+            </td>
+          </tr>
+
+          <!-- ── BODY ── -->
+          <tr>
+            <td style="padding:36px 40px;">
+
+              <p style="margin:0 0 24px;font-size:16px;color:#3B1A08;line-height:1.6;">
+                Hi {CUSTOMER_NAME},
+              </p>
+              <p style="margin:0 0 28px;font-size:16px;color:#3B1A08;line-height:1.6;">
+                You're all set! Your cinnamon rolls are reserved. Keep this reference handy
+                — you'll need it at pickup.
+              </p>
+
+              <!-- Order details table -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="border:1.5px solid #D9CEBF;border-radius:10px;
+                            overflow:hidden;margin-bottom:28px;">
+                <tr>
+                  <td colspan="2"
+                      style="background-color:#F5EFE6;padding:12px 20px;
+                             font-size:11px;font-weight:700;color:#7A5C44;
+                             text-transform:uppercase;letter-spacing:0.1em;">
+                    Order details
+                  </td>
+                </tr>
+                <tr style="border-top:1px solid #D9CEBF;">
+                  <td style="padding:12px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">
+                    Variety
+                  </td>
+                  <td style="padding:12px 20px;color:#3B1A08;font-size:15px;text-align:right;">
+                    {VARIANT}
+                  </td>
+                </tr>
+                <tr style="border-top:1px solid #EDE4D6;">
+                  <td style="padding:12px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">
+                    Quantity
+                  </td>
+                  <td style="padding:12px 20px;color:#3B1A08;font-size:15px;text-align:right;">
+                    {QUANTITY} roll(s)
+                  </td>
+                </tr>
+                <tr style="border-top:1px solid #EDE4D6;">
+                  <td style="padding:12px 20px;color:#7A5C44;font-size:13px;
+                             font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">
+                    Pickup day
+                  </td>
+                  <td style="padding:12px 20px;color:#3B1A08;font-size:15px;text-align:right;">
+                    {PICKUP_DATE}
+                  </td>
+                </tr>
+                {NOTES_BLOCK}
+                <tr style="border-top:2px solid #D9CEBF;">
+                  <td style="padding:14px 20px;background-color:#FEF5E7;color:#3B1A08;
+                             font-size:13px;font-weight:700;text-transform:uppercase;
+                             letter-spacing:0.06em;">
+                    Total charged
+                  </td>
+                  <td style="padding:14px 20px;background-color:#FEF5E7;text-align:right;">
+                    <span style="font-family:Georgia,'Times New Roman',serif;
+                                 font-size:22px;font-weight:700;color:#3B1A08;">
+                      {AMOUNT}
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Pickup reminder -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                     style="background-color:#E6F6F4;border-radius:10px;
+                            border-left:4px solid #1A9E8F;margin-bottom:28px;">
+                <tr>
+                  <td style="padding:16px 20px;">
+                    <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#157E73;
+                               text-transform:uppercase;letter-spacing:0.06em;">
+                      Pickup reminder
+                    </p>
+                    <p style="margin:0;font-size:15px;color:#3B1A08;line-height:1.5;">
+                      Your rolls will be ready for pickup on
+                      <strong>{PICKUP_DATE}</strong>.
+                      Location and time details will be shared closer to the weekend.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 8px;font-size:15px;color:#3B1A08;line-height:1.6;">
+                Questions? Reply to this email or reach us at
+                <a href="mailto:orders@bachatababakery.com"
+                   style="color:#1A9E8F;text-decoration:none;font-weight:600;">
+                  orders@bachatababakery.com
+                </a>
+              </p>
+              <p style="margin:0;font-size:15px;color:#3B1A08;line-height:1.6;">
+                All sales are final. See you soon! 🎉
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- ── FOOTER ── -->
+          <tr>
+            <td style="background-color:#3B1A08;padding:24px 40px;text-align:center;">
+              <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;
+                        font-size:16px;font-weight:700;color:#F5EFE6;">
+                Bachata Bakery
+              </p>
+              <p style="margin:0;font-size:12px;color:rgba(245,239,230,0.55);">
+                &copy; {YEAR} Bachata Bakery. All rights reserved.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /Card -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
