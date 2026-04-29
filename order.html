@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Form — Bachata Bakery</title>
+  <meta name="description" content="Place a custom cookie order with Bachata Bakery. Review our pre-order guidelines and submit your request.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="nav" id="site-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/logo-without-background-web.png" alt="Bachata Bakery" width="160" height="48">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="order.html" class="active">Order</a></li>
+        <li><a href="cinnamon-rolls.html">Cinnamon Rolls</a></li>
+        <li><a href="meet-the-baker.html">Meet the Baker</a></li>
+      </ul>
+      <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="faq.html">FAQ</a>
+      <a href="order.html" class="active">Order</a>
+      <a href="cinnamon-rolls.html">Cinnamon Rolls</a>
+      <a href="meet-the-baker.html">Meet the Baker</a>
+    </nav>
+  </nav>
+
+  <section class="page-hero">
+    <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Custom Cookies</p>
+    <h1 class="display-md">Place an Order</h1>
+    <p class="body-lg mt-4">Your submission is a <strong>request</strong>, not a guarantee. We will confirm availability within 48 hours.</p>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:800px">
+
+      <h2 class="headline-lg" style="margin-bottom:var(--space-5)">Before you submit — please review:</h2>
+
+      <ol class="policy-list">
+        <li>
+          <span class="policy-num">1</span>
+          <span><strong>Minimum order:</strong> 2 dozen cookies. The only exception is the "My Favorite Things" set (1-dozen minimum).</span>
+        </li>
+        <li>
+          <span class="policy-num">2</span>
+          <span><strong>Lead time:</strong> 2–4 weeks required. Rush orders within 7 days of pickup incur a 25% surcharge.</span>
+        </li>
+        <li>
+          <span class="policy-num">3</span>
+          <span><strong>Pickup only.</strong> We cannot ship. Pickup in Middletown, DE (free) or West Chester, PA. Address confirmed by email.</span>
+        </li>
+        <li>
+          <span class="policy-num">4</span>
+          <span><strong>Deposit:</strong> 50% non-refundable deposit due within 48 hours of invoice to secure your date.</span>
+        </li>
+        <li>
+          <span class="policy-num">5</span>
+          <span><strong>Balance:</strong> Remaining 50% due one week before your pickup date.</span>
+        </li>
+        <li>
+          <span class="policy-num">6</span>
+          <span><strong>Changes:</strong> Theme and quantity changes accepted within 3 days of deposit. Orders are finalized after that.</span>
+        </li>
+        <li>
+          <span class="policy-num">7</span>
+          <span><strong>Cancellations:</strong> Non-refundable. Rescheduling to a future date is available as an alternative.</span>
+        </li>
+        <li>
+          <span class="policy-num">8</span>
+          <span><strong>Unpaid invoices:</strong> Orders with invoices unpaid after 48 hours are automatically cancelled.</span>
+        </li>
+      </ol>
+
+      <!-- Replace FORM-ID with the real Jotform embed URL from your Jotform account -->
+      <div style="margin-top:var(--space-6)">
+        <iframe
+          id="order-form"
+          title="Bachata Bakery Order Request Form"
+          src="https://form.jotform.com/FORM-ID"
+          width="100%"
+          height="800"
+          frameborder="0"
+          scrolling="yes"
+          style="border-radius:var(--radius-md);box-shadow:var(--shadow-card);"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo"><img src="assets/logo-without-background-web.png" alt="Bachata Bakery"></div>
+        <p style="margin-top:16px;font-size:0.9rem;opacity:0.7">Authentic Latin-inspired desserts<br>made with love.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p><a href="mailto:info@bachatabakery.com">info@bachatabakery.com</a></p>
+        <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener">Instagram @bachatabakery</a></p>
+        <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener">TikTok @bachatabakery</a></p>
+      </div>
+      <div>
+        <h4>Pickup Locations</h4>
+        <p>Middletown, DE — Fri 3–7 PM</p>
+        <p style="margin-top:4px">West Chester, PA — date confirmed by email</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <p><a href="products.html">Products &amp; Pricing</a></p>
+        <p><a href="faq.html">FAQ</a></p>
+        <p><a href="order.html">Place an Order</a></p>
+        <p><a href="cinnamon-rolls.html">Cinnamon Roll Presale</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>&copy; 2026 Bachata Bakery. All rights reserved.</p></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
