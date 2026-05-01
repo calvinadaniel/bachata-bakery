@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Form — Bachata Bakery</title>
-  <meta name="description" content="Place a custom cookie order with Bachata Bakery. Review our pre-order guidelines and submit your request.">
+  <title>Place an Order — Bachata Bakery</title>
+  <meta name="description" content="Order custom sugar cookies, tres leches cake, or cinnamon rolls from Bachata Bakery.">
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="Bachata Bakery">
   <meta property="og:title"       content="Place an Order — Bachata Bakery">
@@ -13,7 +13,9 @@
   <meta property="og:image"       content="https://bachatabakery.com/assets/Nav-Banner-Image.webp">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
+  <link rel="icon" href="assets/logo-with-circular-background.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 </head>
 <body>
 
@@ -26,10 +28,9 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="products.html">Products</a></li>
         <li><a href="faq.html">FAQ</a></li>
-        <li><a href="order.html" class="active">Order</a></li>
-        <li><a href="cinnamon-rolls.html">Cinnamon Rolls</a></li>
         <li><a href="meet-the-baker.html">Meet the Baker</a></li>
       </ul>
+      <a href="order.html" class="btn btn-primary nav-cta">Order Now</a>
       <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -38,72 +39,410 @@
       <a href="index.html">Home</a>
       <a href="products.html">Products</a>
       <a href="faq.html">FAQ</a>
-      <a href="order.html" class="active">Order</a>
-      <a href="cinnamon-rolls.html">Cinnamon Rolls</a>
+      <a href="order.html" class="active">Order Now</a>
       <a href="meet-the-baker.html">Meet the Baker</a>
     </nav>
   </nav>
 
   <section class="page-hero">
-    <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Custom Cookies</p>
+    <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Let's Make Something Sweet</p>
     <h1 class="display-md">Place an Order</h1>
-    <p class="body-lg mt-4">Your submission is a <strong>request</strong>, not a guarantee. We will confirm availability within 48 hours.</p>
+    <p class="body-lg mt-4">Choose what you'd like to order below.</p>
   </section>
 
   <section class="section">
-    <div class="container" style="max-width:800px">
+    <div class="container" style="max-width:860px">
 
-      <h2 class="headline-lg" style="margin-bottom:var(--space-5)">Before you submit — please review:</h2>
+      <!-- TAB NAV -->
+      <div class="tabs-nav" role="tablist">
+        <button class="tab-btn active" data-tab="tab-order" role="tab" aria-selected="true" aria-controls="tab-order">
+          <span class="tab-emoji">🛒</span>
+          Order Form
+          <span class="tab-label">Tres Leches &amp; Cinnamon Rolls</span>
+        </button>
+        <button class="tab-btn" data-tab="tab-cookies" role="tab" aria-selected="false" aria-controls="tab-cookies">
+          <span class="tab-emoji">🍪</span>
+          Custom Cookie Request
+          <span class="tab-label">Decorated sugar cookie sets</span>
+        </button>
+      </div>
 
-      <ol class="policy-list">
-        <li>
-          <span class="policy-num">1</span>
-          <span><strong>Minimum order:</strong> 2 dozen cookies. The only exception is the "My Favorite Things" set (1-dozen minimum).</span>
-        </li>
-        <li>
-          <span class="policy-num">2</span>
-          <span><strong>Lead time:</strong> 2–4 weeks required. Rush orders within 7 days of pickup incur a 25% surcharge.</span>
-        </li>
-        <li>
-          <span class="policy-num">3</span>
-          <span><strong>Pickup only.</strong> We cannot ship. Pickup in Middletown, DE (free) or West Chester, PA. Address confirmed by email.</span>
-        </li>
-        <li>
-          <span class="policy-num">4</span>
-          <span><strong>Deposit:</strong> 50% non-refundable deposit due within 48 hours of invoice to secure your date.</span>
-        </li>
-        <li>
-          <span class="policy-num">5</span>
-          <span><strong>Balance:</strong> Remaining 50% due one week before your pickup date.</span>
-        </li>
-        <li>
-          <span class="policy-num">6</span>
-          <span><strong>Changes:</strong> Theme and quantity changes accepted within 3 days of deposit. Orders are finalized after that.</span>
-        </li>
-        <li>
-          <span class="policy-num">7</span>
-          <span><strong>Cancellations:</strong> Non-refundable. Rescheduling to a future date is available as an alternative.</span>
-        </li>
-        <li>
-          <span class="policy-num">8</span>
-          <span><strong>Unpaid invoices:</strong> Orders with invoices unpaid after 48 hours are automatically cancelled.</span>
-        </li>
-      </ol>
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- TAB 1: ORDER FORM (Tres Leches + Cinnamon Rolls)   -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div id="tab-order" class="tab-panel active" role="tabpanel">
 
-      <!-- Replace FORM-ID with the real Jotform embed URL from your Jotform account -->
-      <div style="margin-top:var(--space-6)">
+        <!-- Presale callout -->
+        <div class="callout" style="margin-bottom:var(--space-6)">
+          <div class="callout-title">Weekly Presale Window</div>
+          <p class="body-md">Opens <strong>Friday at noon — closes Sunday midnight or until sold out</strong>. Place your order below for pickup the following week. Pickup details confirmed by email no later than Wednesday.</p>
+        <div class="pickup-grid">
+              <div class="pickup-item">
+                <div class="pickup-location">Middletown, DE</div>
+                <p class="body-md">Fridays · 3:30 PM – 7:00 PM</p>
+              </div>
+              <div class="pickup-item">
+                <div class="pickup-location">West Chester, PA</div>
+                <p class="body-md">Saturdays · 1:00 PM – 2:30 PM</p>
+              </div>
+            </div>
+        </div>
+
+        <!-- Accordion: Tres Leches Cakes -->
+        <details class="accordion-item" open>
+          <summary><span class="flavor-name">Tres Leches Cakes</span> <span style="font-weight:400;color:var(--primary);margin-left:var(--space-2)">Weekly Presale</span></summary>
+          <div class="accordion-body">
+            <p class="body-lg" style="margin-bottom:var(--space-5)">Handmade tres leches cakes soaked in three milks and topped with your choice of flavor.</p>
+            <div class="flavor-grid" style="margin-bottom:var(--space-2)">
+              <div class="flavor-card">
+                <div class="flavor-name">Dulce de Leche</div>
+                <div style="display:flex;gap:8px;margin-bottom:var(--space-2)">
+                  <span class="chip">Caramel</span>
+                </div>
+                <p class="flavor-detail">Rich caramel-soaked tres leches</p>
+                <p class="flavor-price">$9.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Guava</div>
+                <div style="display:flex;gap:8px;margin-bottom:var(--space-2)">
+                  <span class="chip">Tropical</span>
+                </div>
+                <p class="flavor-detail">Tropical guava-infused tres leches</p>
+                <p class="flavor-price">$9.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Pineapple</div>
+                <div style="display:flex;gap:8px;margin-bottom:var(--space-2)">
+                  <span class="chip">Tropical</span>
+                </div>
+                <p class="flavor-detail">Bright pineapple tres leches</p>
+                <p class="flavor-price">$9.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Nutella</div>
+                <div style="display:flex;gap:8px;margin-bottom:var(--space-2)">
+                  <span class="chip">Chocolate</span>
+                </div>
+                <p class="flavor-detail">Indulgent Nutella tres leches</p>
+                <p class="flavor-price">$9.00</p>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Accordion: Cinnamon Rolls -->
+        <details class="accordion-item" open>
+          <summary><span class="flavor-name">Cinnamon Rolls</span> <span style="font-weight:400;color:var(--primary);margin-left:var(--space-2)">Weekly Presale</span></summary>
+          <div class="accordion-body">
+            <p class="body-lg" style="margin-bottom:var(--space-5)">Four Latin-inspired flavors made fresh each week.</p>
+            <div class="flavor-grid" style="margin-bottom:var(--space-5)">
+              <div class="flavor-card">
+                <div class="flavor-name">El Clásico</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--space-2)">
+                  <span class="chip">Classic</span>
+                </div>
+                <p class="flavor-detail"><strong>Frosting:</strong> Cream cheese</p>
+                <p class="flavor-price">$8.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">La Dominicana</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--space-2)">
+                  <span class="chip">Guava</span>
+                </div>
+                <p class="flavor-detail"><strong>Frosting:</strong> Guava cream cheese</p>
+                <p class="flavor-price">$8.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Café con Leche</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--space-2)">
+                  <span class="chip">Espresso</span>
+                </div>
+                <p class="flavor-detail"><strong>Frosting:</strong> Coffee cream cheese</p>
+                <p class="flavor-price">$8.00</p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Dulce</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--space-2)">
+                  <span class="chip">Dulce de Leche</span>
+                  <span class="chip">Sea Salt</span>
+                </div>
+                <p class="flavor-detail"><strong>Frosting:</strong> Dulce de leche with sea salt</p>
+                <p class="flavor-price">$8.00</p>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <!-- Accordion: Sugar Cookie Preset Designs -->
+        <details class="accordion-item" open>
+          <summary><span class="flavor-name">Sugar Cookie Preset Designs</span> <span style="font-weight:400;color:var(--primary);margin-left:var(--space-2)">Weekly Presale</span></summary>
+          <div class="accordion-body">
+            <p class="body-lg" style="margin-bottom:var(--space-5)">Ready-to-order cookies with beautiful preset designs — no custom request needed. Choose between a classic cookie or add a gift tag and premium packaging for gifting.</p>
+            <div class="flavor-grid" style="margin-bottom:var(--space-2)">
+              <div class="flavor-card">
+                <div class="flavor-name">Classic</div>
+                <div style="display:flex;gap:8px;margin-bottom:var(--space-2)">
+                  <span class="chip">Preset Design</span>
+                </div>
+                <p class="flavor-detail">Beautiful decorated sugar cookie, ready to enjoy.</p>
+                <p class="flavor-price">$7.00 <span style="font-size:0.875rem;font-weight:500;opacity:0.85">each</span></p>
+              </div>
+              <div class="flavor-card">
+                <div class="flavor-name">Gift Ready</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:var(--space-2)">
+                  <span class="chip">Gift Tag</span>
+                  <span class="chip">Packaged</span>
+                </div>
+                <p class="flavor-detail">Same great cookie with a personalized gift tag and premium packaging.</p>
+                <p class="flavor-price">$8.00 <span style="font-size:0.875rem;font-weight:500;opacity:0.85">each</span></p>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div class="callout" style="margin-top:var(--space-6);margin-bottom:var(--space-5)">
+          <div class="callout-title">Payment processed securely via Square</div>
+          <p class="body-md">Select your items, quantities, preferred pickup date and location, then complete payment below. Pickup details will be confirmed by email no later than Wednesday.</p>
+        </div>
+
         <iframe
-          id="order-form"
-          title="Bachata Bakery Order Request Form"
-          src="https://form.jotform.com/FORM-ID"
+          title="Order Form"
+          src="https://form.jotform.com/253028973146057"
           width="100%"
-          height="800"
+          height="1100"
           frameborder="0"
           scrolling="yes"
           style="border-radius:var(--radius-md);box-shadow:var(--shadow-card);"
           allowfullscreen
         ></iframe>
-      </div>
+
+      </div><!-- /tab-order -->
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- TAB 2: CUSTOM COOKIE REQUEST                       -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div id="tab-cookies" class="tab-panel" role="tabpanel">
+
+        <!-- Policy gate -->
+        <div class="callout" style="margin-bottom:var(--space-6)">
+          <div class="callout-title">Before you submit — please review</div>
+          <ol class="policy-list" style="margin-bottom:0">
+            <li><span class="policy-num">1</span><span><strong>Minimum order:</strong> 2 dozen. Exception: "My Favorite Things" set (1-dozen min).</span></li>
+            <li><span class="policy-num">2</span><span><strong>Lead time:</strong> 2&#8211;4 weeks. Rush orders within 7 days incur a 25% surcharge.</span></li>
+            <li><span class="policy-num">3</span><span><strong>Pickup only.</strong> Middletown, DE (free) or select DE locations. Address confirmed by email.</span></li>
+            <li><span class="policy-num">4</span><span><strong>Deposit:</strong> 50% non-refundable deposit due within 48 hours of invoice.</span></li>
+            <li><span class="policy-num">5</span><span><strong>Balance:</strong> Remaining 50% due one week before pickup.</span></li>
+            <li><span class="policy-num">6</span><span><strong>Changes:</strong> Theme/quantity changes accepted within 3 days of deposit only.</span></li>
+            <li><span class="policy-num">7</span><span><strong>Cancellations:</strong> Non-refundable. Rescheduling available.</span></li>
+            <li><span class="policy-num">8</span><span><strong>Unpaid invoices</strong> are auto-cancelled after 48 hours.</span></li>
+          </ol>
+        </div>
+
+        <!-- Pricing Reference -->
+        <div style="margin-bottom:var(--space-6)">
+          <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Pricing Reference</p>
+          <div class="pricing-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))">
+            <div class="pricing-card">
+              <div class="pricing-tier">Simple Set</div>
+              <div class="pricing-price">$78<span style="font-size:1rem;font-weight:500">+/doz</span></div>
+              <ul class="pricing-features">
+                <li>4 unique designs</li>
+                <li>Up to 3 colors</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Detailed Set</div>
+              <div class="pricing-price">$84<span style="font-size:1rem;font-weight:500">+/doz</span></div>
+              <ul class="pricing-features">
+                <li>6 unique designs</li>
+                <li>Up to 5 colors</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Elaborate Set</div>
+              <div class="pricing-price">$96<span style="font-size:1rem;font-weight:500">+/doz</span></div>
+              <ul class="pricing-features">
+                <li>8 unique designs</li>
+                <li>Up to 6 colors</li>
+              </ul>
+            </div>
+            <div class="pricing-card featured">
+              <div class="pricing-tier">My Favorite Things</div>
+              <div class="pricing-price">$108<span style="font-size:1rem;font-weight:500">+/doz</span></div>
+              <ul class="pricing-features">
+                <li>12 unique designs</li>
+                <li>1-dozen minimum</li>
+              </ul>
+            </div>
+            <div class="pricing-card">
+              <div class="pricing-tier">Character Cookies</div>
+              <div class="pricing-price">$8&#8211;$10<span style="font-size:1rem;font-weight:500"> each</span></div>
+              <ul class="pricing-features">
+                <li>Add-on to any set</li>
+                <li>1 design per cookie</li>
+              </ul>
+            </div>
+          </div>
+          <p style="margin-top:var(--space-3);font-size:0.875rem"><a href="products.html" style="color:var(--primary)">View full pricing details &#8594;</a></p>
+        </div>
+
+        <form
+          id="cookie-order-form"
+          method="POST"
+          action="https://submit.jotform.com/submit/252818183831057/"
+          enctype="multipart/form-data"
+          novalidate
+        >
+          <input type="hidden" name="formID"     value="252818183831057">
+          <input type="hidden" name="simple_spc" value="252818183831057-252818183831057">
+          <input type="hidden" name="website"    value="">
+          <input type="hidden" name="q12_date[month]" id="q12_month">
+          <input type="hidden" name="q12_date[day]"   id="q12_day">
+          <input type="hidden" name="q12_date[year]"  id="q12_year">
+
+          <div class="form-section">
+            <div class="form-section-title">Contact Information</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="first_3">First Name <span class="required">*</span></label>
+                <input class="form-input" type="text" id="first_3" name="q3_name[first]" required placeholder="First name">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="last_3">Last Name <span class="required">*</span></label>
+                <input class="form-input" type="text" id="last_3" name="q3_name[last]" required placeholder="Last name">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input_4">Email <span class="required">*</span></label>
+              <input class="form-input" type="email" id="input_4" name="q4_email" required placeholder="you@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input_5_full">Phone Number <span class="required">*</span></label>
+              <input class="form-input" type="tel" id="input_5_full" name="q5_phoneNumber[full]" required placeholder="(000) 000-0000">
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Order Details</div>
+            <div class="form-group">
+              <label class="form-label" for="event-date-picker">Event / Pickup Date <span class="required">*</span></label>
+              <input class="form-input" type="date" id="event-date-picker" required>
+              <p class="form-hint">We need 2&#8211;4 weeks notice. Rush orders within 7 days incur a 25% surcharge.</p>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="input_15">Type of Occasion <span class="required">*</span></label>
+                <select class="form-input" id="input_15" name="q15_typeOf" required>
+                  <option value="">Please select&#8230;</option>
+                  <option value="Weddings">Weddings</option>
+                  <option value="Bridal Shower">Bridal Shower</option>
+                  <option value="Graduation">Graduation</option>
+                  <option value="Baby Shower">Baby Shower</option>
+                  <option value="Just Because">Just Because</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="input_16">Number of Cookies <span class="required">*</span></label>
+                <select class="form-input" id="input_16" name="q16_numberOf" required>
+                  <option value="">Please select&#8230;</option>
+                  <option value="1 Dozen - ONLY of &quot;My Favorite Things&quot; Set">1 Dozen &#8212; My Favorite Things only</option>
+                  <option value="2 Dozen">2 Dozen</option>
+                  <option value="3 Dozen">3 Dozen</option>
+                  <option value="4 Dozen">4 Dozen</option>
+                  <option value="5 Dozen">5 Dozen</option>
+                </select>
+                <p class="form-hint">2 dozen minimum. Add in increments of half a dozen after that.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Cookie Specs</div>
+            <div class="form-group">
+              <label class="form-label">Cookie Flavor <span class="required">*</span></label>
+              <div class="radio-pill-group">
+                <div class="radio-pill">
+                  <input type="radio" id="flavor_vanilla" name="q17_cookieFlavor" value="Vanilla" required>
+                  <label for="flavor_vanilla">Vanilla</label>
+                </div>
+                <div class="radio-pill">
+                  <input type="radio" id="flavor_funfetti" name="q17_cookieFlavor" value="Funfetti (+ $5 per dozen)">
+                  <label for="flavor_funfetti">Funfetti <span style="opacity:0.7;font-size:0.85em">(+$5/doz)</span></label>
+                </div>
+                <div class="radio-pill">
+                  <input type="radio" id="flavor_lemon" name="q17_cookieFlavor" value="Lemon (+ $5 per dozen)">
+                  <label for="flavor_lemon">Lemon <span style="opacity:0.7;font-size:0.85em">(+$5/doz)</span></label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Add-Ons</label>
+              <label class="form-checkbox">
+                <input type="checkbox" name="q27_glutenFree" value="Yes">
+                <span><strong>Gluten Free &amp; Dairy Free</strong> &#8212; $1.50 per cookie add-on</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Design &amp; Delivery</div>
+            <div class="form-group">
+              <label class="form-label" for="input_21">Design Description <span class="required">*</span></label>
+              <textarea class="form-input" id="input_21" name="q21_designDescription" required placeholder="Color schemes, themes, names, characters, any details you'd like me to know&#8230;" style="min-height:140px"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pickup or Delivery <span class="required">*</span></label>
+              <div class="radio-card-group">
+                <div class="radio-card">
+                  <input type="radio" id="pickup_middletown" name="q22_wouldYou" value="I will pick up in Middletown, DE 19709" required>
+                  <label for="pickup_middletown">Middletown, DE 19709 &#8212; <strong>Free</strong></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="pickup_wilmington" name="q22_wouldYou" value="I will pick up in Wilmington, DE 19801 ($10 fee)">
+                  <label for="pickup_wilmington">Wilmington, DE 19801 &#8212; <strong>$10 fee</strong></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="pickup_dover" name="q22_wouldYou" value="I will pick up in Dover, DE 19901 ($10 fee)">
+                  <label for="pickup_dover">Dover, DE 19901 &#8212; <strong>$10 fee</strong></label>
+                </div>
+                <div class="radio-card">
+                  <input type="radio" id="pickup_delivery" name="q22_wouldYou" value="Delivery Option in DE (added fee based on location)">
+                  <label for="pickup_delivery">Delivery in DE &#8212; fee based on location</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="form-section-title">Final Details</div>
+            <div class="form-group">
+              <label class="form-label">Inspiration Photos</label>
+              <div class="form-file-area">
+                <input type="file" name="file" id="input_10" accept="image/*" multiple>
+                <div class="form-file-icon">&#128206;</div>
+                <p class="form-file-text"><strong>Click to upload</strong> or drag and drop<br>JPG, PNG, GIF accepted</p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input_24">Special Instructions</label>
+              <textarea class="form-input" id="input_24" name="q24_specialInstructions" placeholder="Allergies, packaging preferences, anything else we should know&#8230;"></textarea>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Acknowledgment <span class="required">*</span></label>
+              <label class="form-checkbox">
+                <input type="checkbox" name="q23_iUnderstand[]" value="Yes" required id="input_23_0">
+                <span>I understand that filling out this form <strong>does not guarantee my request</strong>. All requests are subject to availability.</span>
+              </label>
+            </div>
+            <div class="hcaptcha-wrap">
+              <div class="h-captcha" data-sitekey="772f4a50-7161-425e-8cd5-4d7e361ab765"></div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:var(--space-4)">
+              Place Order Request
+            </button>
+          </div>
+        </form>
+      </div><!-- /tab-cookies -->
 
     </div>
   </section>
@@ -116,14 +455,14 @@
       </div>
       <div>
         <h4>Contact</h4>
-        <p><a href="mailto:info@bachatabakery.com">info@bachatabakery.com</a></p>
-        <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener">Instagram @bachatabakery</a></p>
-        <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener">TikTok @bachatabakery</a></p>
+        <p><a href="mailto:info@bachatabakery.com"><i class="fa-regular fa-envelope"></i> info@bachatabakery.com</a></p>
+        <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> @bachatabakery</a></p>
+        <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> @bachatabakery</a></p>
       </div>
       <div>
         <h4>Pickup Locations</h4>
         <p>Middletown, DE — Fri 3–7 PM</p>
-        <p style="margin-top:4px">West Chester, PA — date confirmed by email</p>
+        <p style="margin-top:4px">West Chester, PA — Sat 1–2:30 PM</p>
       </div>
       <div>
         <h4>Quick Links</h4>
@@ -137,5 +476,34 @@
   </footer>
 
   <script src="script.js"></script>
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Split date picker into Jotform month/day/year hidden fields
+    const datePicker = document.getElementById('event-date-picker');
+    const cookieForm = document.getElementById('cookie-order-form');
+    if (cookieForm) {
+      cookieForm.addEventListener('submit', () => {
+        if (datePicker.value) {
+          const [year, month, day] = datePicker.value.split('-');
+          document.getElementById('q12_month').value = month;
+          document.getElementById('q12_day').value   = day;
+          document.getElementById('q12_year').value  = year;
+        }
+      });
+    }
+  </script>
 </body>
 </html>

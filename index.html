@@ -13,6 +13,7 @@
   <meta property="og:image"       content="https://bachatabakery.com/assets/Nav-Banner-Image.webp">
   <meta property="og:image:width"  content="1200">
   <meta property="og:image:height" content="630">
+  <link rel="icon" href="assets/logo-with-circular-background.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -26,10 +27,9 @@
         <li><a href="index.html" class="active">Home</a></li>
         <li><a href="products.html">Products</a></li>
         <li><a href="faq.html">FAQ</a></li>
-        <li><a href="order.html">Order</a></li>
-        <li><a href="cinnamon-rolls.html">Cinnamon Rolls</a></li>
         <li><a href="meet-the-baker.html">Meet the Baker</a></li>
       </ul>
+      <a href="order.html" class="btn btn-primary nav-cta">Order Now</a>
       <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -38,14 +38,13 @@
       <a href="index.html" class="active">Home</a>
       <a href="products.html">Products</a>
       <a href="faq.html">FAQ</a>
-      <a href="order.html">Order</a>
-      <a href="cinnamon-rolls.html">Cinnamon Rolls</a>
+      <a href="order.html">Order Now</a>
       <a href="meet-the-baker.html">Meet the Baker</a>
     </nav>
   </nav>
 
   <section class="hero">
-    <img class="hero-bg" src="assets/Nav-Banner-Image.webp" alt="Bachata Bakery artisan cookies" loading="eager">
+    <img class="hero-bg" src="assets/Bad%20Bunny%20Puerto%20Rico%20Set.jpg" alt="Bad Bunny Puerto Rico cookie set" loading="eager">
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="display-lg">Treats that<br>tell stories.</h1>
@@ -58,34 +57,25 @@
     <div class="container">
       <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Our Work</p>
       <h2 class="display-sm" style="margin-bottom:var(--space-6)">Every cookie tells a story</h2>
-      <div class="carousel" aria-label="Cookie gallery">
-        <div class="carousel-track">
-          <div class="carousel-item">
-            <img data-src="assets/Hamilton%20Logo%20Feature%20Cookie.jpg" src="" alt="Hamilton Logo Cookie" loading="lazy">
-          </div>
-          <div class="carousel-item">
-            <img data-src="assets/Bad%20Bunny%20Puerto%20Rico%20Set.jpg" src="" alt="Bad Bunny Puerto Rico Cookie Set" loading="lazy">
-          </div>
-          <div class="carousel-item">
-            <img data-src="assets/Ice%20Cream%20Cookies.jpg" src="" alt="Ice Cream Cookies" loading="lazy">
-          </div>
-          <div class="carousel-item">
-            <img data-src="assets/Graduation%20Set.jpg" src="" alt="Graduation Cookie Set" loading="lazy">
-          </div>
-          <div class="carousel-item">
-            <img data-src="assets/Bluey%20Cookies.jpg" src="" alt="Bluey Cookies" loading="lazy">
-          </div>
-          <div class="carousel-item">
-            <img data-src="assets/Tangled%20Set.jpg" src="" alt="Tangled Cookie Set" loading="lazy">
-          </div>
+      <div class="gallery-grid" aria-label="Cookie gallery">
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Hamilton Logo Cookie">
+          <img src="assets/Hamilton%20Logo%20Feature%20Cookie.jpg" alt="Hamilton Logo Cookie" loading="lazy">
         </div>
-        <button class="carousel-btn carousel-prev" aria-label="Previous slide">
-          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button class="carousel-btn carousel-next" aria-label="Next slide">
-          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="carousel-dots" role="tablist" aria-label="Gallery slides"></div>
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Bad Bunny Puerto Rico Cookie Set">
+          <img src="assets/Bad%20Bunny%20Puerto%20Rico%20Set.jpg" alt="Bad Bunny Puerto Rico Cookie Set" loading="lazy">
+        </div>
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Ice Cream Cookies">
+          <img src="assets/Ice%20Cream%20Cookies.jpg" alt="Ice Cream Cookies" loading="lazy">
+        </div>
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Graduation Cookie Set">
+          <img src="assets/Graduation%20Set.jpg" alt="Graduation Cookie Set" loading="lazy">
+        </div>
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Bluey Cookies">
+          <img src="assets/Bluey%20Cookies.jpg" alt="Bluey Cookies" loading="lazy">
+        </div>
+        <div class="gallery-item" tabindex="0" role="button" aria-label="View Tangled Cookie Set">
+          <img src="assets/Tangled%20Set.jpg" alt="Tangled Cookie Set" loading="lazy">
+        </div>
       </div>
     </div>
   </section>
@@ -106,15 +96,11 @@
     </div>
   </section>
 
-  <section class="instagram-section">
-    <div class="container">
-      <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Follow Along</p>
-      <h2 class="display-sm">@bachatabakery</h2>
-      <!-- LightWidget: replace WIDGET-CODE with your widget ID from lightwidget.com -->
-      <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
-      <iframe src="//lightwidget.com/widgets/WIDGET-CODE.html" scrolling="no" allowtransparency="true" class="lightwidget-widget" style="width:100%;border:0;overflow:hidden;margin-top:var(--space-6)"></iframe>
-    </div>
-  </section>
+  <div class="cta-banner">
+    <h2 class="display-sm">Ready to order?</h2>
+    <p class="body-md">Custom sugar cookies, tres leches cakes, and weekly cinnamon roll presales — made with love and a little Latin heat.</p>
+    <a href="order.html" class="btn btn-secondary mt-5">Place an Order</a>
+  </div>
 
   <footer class="footer">
     <div class="footer-inner">
@@ -124,14 +110,14 @@
       </div>
       <div>
         <h4>Contact</h4>
-        <p><a href="mailto:info@bachatabakery.com">info@bachatabakery.com</a></p>
-        <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener">Instagram @bachatabakery</a></p>
-        <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener">TikTok @bachatabakery</a></p>
+        <p><a href="mailto:info@bachatabakery.com"><i class="fa-regular fa-envelope"></i> info@bachatabakery.com</a></p>
+        <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> @bachatabakery</a></p>
+        <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> @bachatabakery</a></p>
       </div>
       <div>
         <h4>Pickup Locations</h4>
         <p>Middletown, DE — Fri 3–7 PM</p>
-        <p style="margin-top:4px">West Chester, PA — date confirmed by email</p>
+        <p style="margin-top:4px">West Chester, PA — Sat 1–2:30 PM</p>
       </div>
       <div>
         <h4>Quick Links</h4>
@@ -144,6 +130,46 @@
     <div class="footer-bottom"><p>&copy; 2026 Bachata Bakery. All rights reserved.</p></div>
   </footer>
 
+  <div class="gallery-modal" id="gallery-modal" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+    <div class="gallery-modal-backdrop"></div>
+    <div class="gallery-modal-content">
+      <button class="gallery-modal-close" aria-label="Close image">&times;</button>
+      <img class="gallery-modal-img" src="" alt="">
+    </div>
+  </div>
+
   <script src="script.js"></script>
+  <script>
+    (function () {
+      var modal = document.getElementById('gallery-modal');
+      var modalImg = modal.querySelector('.gallery-modal-img');
+      var closeBtn = modal.querySelector('.gallery-modal-close');
+      var backdrop = modal.querySelector('.gallery-modal-backdrop');
+
+      function openModal(img) {
+        modalImg.src = img.src;
+        modalImg.alt = img.alt;
+        modal.removeAttribute('hidden');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function closeModal() {
+        modal.setAttribute('hidden', '');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.gallery-item').forEach(function (item) {
+        item.addEventListener('click', function () { openModal(item.querySelector('img')); });
+        item.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item.querySelector('img')); }
+        });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      backdrop.addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+    })();
+  </script>
 </body>
 </html>

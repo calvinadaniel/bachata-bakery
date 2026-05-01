@@ -8,22 +8,51 @@ The aesthetic is **Artisanal Heat**. We achieve this through a "High-End Editori
 
 ---
 
-## 2. Colors: Tonal Depth & Vibrancy
-Our palette is a sophisticated dance between "Creamy Warmth" and "Sultry Latin Nights."
+## 2. Colors: Tropical Caribbean Palette
+
+Sourced from `assets/color-palette-bachata-bakery.jpeg` — a Caribbean beach sunset. Five colors extracted directly from the palette swatches.
+
+### The Five Palette Colors
+
+| Name | Hex | Swatch Description |
+|------|-----|--------------------|
+| Ocean Deep | `#1965A8` | Rich saturated deep blue — open ocean |
+| Turquoise | `#29CBC5` | Bright vivid teal — shallow coastal water |
+| Sand | `#D2B07C` | Warm golden beige — sunlit beach sand |
+| Coral | `#F68087` | Light salmon-pink — tropical sunset |
+| Rose | `#C25878` | Deep muted rose — deepening dusk |
+
+### Design Token Mapping
+
+| Token | Hex | Source |
+|-------|-----|--------|
+| `surface` | `#FEF8F2` | Sand lightened — warm near-white base |
+| `surface-container-low` | `#F5EDE0` | Sand toned down — section alternation |
+| `surface-container` | `#EDE4D5` | Mid-sand tone |
+| `surface-container-high` | `#E4DACC` | Deeper sand |
+| `surface-container-highest` | `#D9CEBC` | Darkest surface container |
+| `surface-container-lowest` | `#FFFFFF` | Cards — pure white lift |
+| `primary` | `#C25878` | Rose — brand CTAs, highlights, active states |
+| `primary-container` | `#F68087` | Coral — gradient end, glow |
+| `secondary` | `#29CBC5` | Turquoise — secondary accents |
+| `tertiary` | `#1965A8` | Ocean Deep — footer bg, dark accents |
+| `tertiary-container` | `#D2B07C` | Sand — flavor chips, tags |
+| `on-surface` | `#2C1F1A` | Warm near-black — all body text |
+| `on-primary` | `#FFFFFF` | White text on primary/rose backgrounds |
+| `outline-variant` | `rgba(210, 176, 124, 0.25)` | Sand at low opacity — ghost borders |
 
 ### The "No-Line" Rule
-**Designers are strictly prohibited from using 1px solid borders to define sections.** 
-In this system, boundaries are created through color. A section change must be signaled by a transition from `surface` (#fcf6ed) to `surface-container-low` (#f6f0e6) or a bold splash of `primary` (#b70049). This creates a seamless, premium flow that mimics high-end print magazines.
+**Designers are strictly prohibited from using 1px solid borders to define sections.**
+Boundaries are created through color. A section change must be signaled by a transition from `surface` to `surface-container-low`, or a bold splash of `primary` (Rose). This creates a seamless, premium flow.
 
 ### Surface Hierarchy & Nesting
-Treat the UI as a series of physical layers. 
-- **Base Layer:** `surface` (#fcf6ed)
-- **Nested Content:** Use `surface-container` tiers (Lowest to Highest) to create depth. For example, a "Featured Pastry" card should use `surface-container-lowest` (#ffffff) to appear naturally lifted against a `surface-container` background.
+Treat the UI as a series of physical layers.
+- **Base Layer:** `surface` (#fef8f2) — warm near-white, sand-inspired
+- **Nested Content:** Use `surface-container` tiers (Lowest → Highest) to create depth. Cards use `surface-container-lowest` (#ffffff) to appear lifted.
 
 ### The "Glass & Gradient" Rule
-To add soul to the interface:
-- **Signature Gradients:** For primary CTAs and hero headers, use a subtle linear gradient from `primary` (#b70049) to `primary-container` (#ff7290). This provides a "glow" that flat hex codes cannot replicate.
-- **Glassmorphism:** For floating navigation bars or snackbars, use `surface` at 80% opacity with a `20px` backdrop-blur. This keeps the vibrant food photography visible even beneath the UI.
+- **Signature Gradients:** CTAs and hero overlays use `linear-gradient(135deg, #C25878, #F68087)` — Rose to Coral. Warm, tropical, vibrant.
+- **Glassmorphism:** Sticky nav uses `surface` at 82% opacity + `backdrop-filter: blur(20px)`.
 
 ---
 
