@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bachata Bakery — Authentic Latin-Inspired Desserts</title>
+  <title>Bachata Bakery â€” Authentic Latin-Inspired Desserts</title>
   <meta name="description" content="Custom sugar cookies and cinnamon rolls made with love. Authentic Latin-inspired desserts by Raquel in Delaware.">
   <meta property="og:type"        content="website">
   <meta property="og:site_name"   content="Bachata Bakery">
-  <meta property="og:title"       content="Bachata Bakery — Authentic Latin-Inspired Desserts">
+  <meta property="og:title"       content="Bachata Bakery â€” Authentic Latin-Inspired Desserts">
   <meta property="og:description" content="Custom sugar cookies and cinnamon rolls made with love in Delaware.">
   <meta property="og:url"         content="https://bachatabakery.com/">
   <meta property="og:image"       content="https://bachatabakery.com/assets/Nav-Banner-Image.webp">
@@ -15,68 +15,163 @@
   <meta property="og:image:height" content="630">
   <link rel="icon" href="assets/logo-with-circular-background.png" type="image/png">
   <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["Bakery", "FoodEstablishment"],
+    "name": "Bachata Bakery",
+    "description": "Custom sugar cookies, cinnamon rolls, and tres leches cakes. Latin Caribbean-inspired desserts made by Raquel in Delaware.",
+    "url": "https://bachatabakery.com",
+    "email": "info@bachatabakery.com",
+    "image": "https://bachatabakery.com/assets/Nav-Banner-Image.webp",
+    "hasMenu": "https://bachatabakery.com/products/",
+    "founder": { "@type": "Person", "name": "Raquel" },
+    "foundingDate": "2020",
+    "dateModified": "2026-06-16",
+    "areaServed": ["Middletown, DE", "West Chester, PA"],
+    "servesCuisine": "Latin Caribbean",
+    "address": [
+      {
+        "@type": "PostalAddress",
+        "addressLocality": "Middletown",
+        "addressRegion": "DE",
+        "addressCountry": "US"
+      },
+      {
+        "@type": "PostalAddress",
+        "addressLocality": "West Chester",
+        "addressRegion": "PA",
+        "addressCountry": "US"
+      }
+    ],
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Friday",
+        "opens": "15:00",
+        "closes": "18:00",
+        "description": "Pickup - Middletown, DE"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": "Saturday",
+        "opens": "10:00",
+        "closes": "13:00",
+        "description": "Pickup - Artisan Exchange, West Chester, PA"
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/bachatabakery",
+      "https://www.tiktok.com/@bachatabakery",
+      "https://www.facebook.com/people/Bachata-Bakery/61571899555540/"
+    ]
+  }
+  </script>
 </head>
 <body>
 
   <nav class="nav" id="site-nav">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="./" class="nav-logo">
         <img src="assets/logo-without-background-web.png" alt="Bachata Bakery" width="160" height="48">
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="meet-the-baker.html">Meet the Baker</a></li>
+        <li><a href="./" class="active">Home</a></li>
+        <li><a href="products/">Products</a></li>
+        <li><a href="faq/">FAQ</a></li>
+        <li><a href="meet-the-baker/">Meet the Baker</a></li>
       </ul>
-      <a href="order.html" class="btn btn-primary nav-cta">Order Now</a>
+      <a href="order/" class="btn btn-primary nav-cta">Order Now</a>
       <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
     <nav class="nav-mobile">
-      <a href="index.html" class="active">Home</a>
-      <a href="products.html">Products</a>
-      <a href="faq.html">FAQ</a>
-      <a href="order.html">Order Now</a>
-      <a href="meet-the-baker.html">Meet the Baker</a>
+      <a href="./" class="active">Home</a>
+      <a href="products/">Products</a>
+      <a href="faq/">FAQ</a>
+      <a href="order/">Order Now</a>
+      <a href="meet-the-baker/">Meet the Baker</a>
     </nav>
   </nav>
 
   <section class="hero">
-    <img class="hero-bg" src="assets/Bad%20Bunny%20Puerto%20Rico%20Set.jpg" alt="Bad Bunny Puerto Rico cookie set" loading="eager">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1 class="display-lg">Treats that<br>tell stories.</h1>
-      <p class="body-lg">Custom sugar cookies &amp; cinnamon rolls rooted in Latin heritage — made with Amor.</p>
-      <a href="order.html" class="btn btn-primary">Place an Order</a>
+    <video class="hero-bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+      <source src="assets/videos/hero-bg.mp4" type="video/mp4">
+    </video>
+    <div class="hero-fade" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-content">
+          <h1 class="display-lg hero-brand">Bachata Bakery</h1>
+          <p class="display-sm hero-tagline"><span class="hero-tagline-weekly">Weekly</span> <span class="hero-tagline-drop">Drop</span></p>
+          <p class="body-lg">Treats that tell stories â€” made with Amor. Cinnamon rolls, tres leches, and cookie presets drop fresh every week.</p>
+        </div>
+
+        <aside class="preorder-strip" aria-label="Weekly preorder details">
+          <div class="preorder-window">
+            <span class="preorder-label">Order window</span>
+            <span class="preorder-days">Sun â€“ Wed</span>
+            <span class="preorder-sub">Until sold out</span>
+          </div>
+
+          <div class="preorder-facts">
+            <div class="preorder-fact">
+              <span class="preorder-label">Rolls</span>
+              <span class="preorder-price">$8</span>
+              <span class="preorder-detail">El ClÃ¡sico Â· La Dominicana Â· CafÃ© con Leche Â· Dulce</span>
+            </div>
+            <div class="preorder-fact">
+              <span class="preorder-label">Tres Leches</span>
+              <span class="preorder-price">$8</span>
+              <span class="preorder-detail">Classic Â· Guava Â· Coffee Â· Passion Fruit</span>
+            </div>
+            <div class="preorder-fact">
+              <span class="preorder-label">Presets</span>
+              <span class="preorder-price">$7 / $8</span>
+              <span class="preorder-detail">Classic Â· Gift Ready</span>
+            </div>
+            <div class="preorder-pickups">
+              <div class="preorder-fact preorder-fact-inline">
+                <span class="preorder-label">Friday pickup</span>
+                <span class="preorder-place">Middletown, DE</span>
+                <span class="preorder-detail">3 â€“ 6 PM</span>
+              </div>
+              <div class="preorder-fact preorder-fact-inline">
+                <span class="preorder-label">Saturday pickup</span>
+                <span class="preorder-place">Artisan Exchange</span>
+                <span class="preorder-detail">West Chester, PA Â· 10 AM â€“ 1 PM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preorder-cta">
+            <a href="order/" class="btn btn-primary">Order Now →</a>
+            <span class="preorder-sub">Preorder closes Wednesday</span>
+          </div>
+        </aside>
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Our Work</p>
-      <h2 class="display-sm" style="margin-bottom:var(--space-6)">Every cookie tells a story</h2>
+      <h2 class="display-sm gallery-heading">Every cookie tells a story</h2>
       <div class="gallery-grid" aria-label="Cookie gallery">
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Hamilton Logo Cookie">
+        <figure class="gallery-item">
           <img src="assets/Hamilton%20Logo%20Feature%20Cookie.jpg" alt="Hamilton Logo Cookie" loading="lazy">
-        </div>
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Bad Bunny Puerto Rico Cookie Set">
-          <img src="assets/Bad%20Bunny%20Puerto%20Rico%20Set.jpg" alt="Bad Bunny Puerto Rico Cookie Set" loading="lazy">
-        </div>
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Ice Cream Cookies">
-          <img src="assets/Ice%20Cream%20Cookies.jpg" alt="Ice Cream Cookies" loading="lazy">
-        </div>
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Graduation Cookie Set">
+        </figure>
+        <figure class="gallery-item">
           <img src="assets/Graduation%20Set.jpg" alt="Graduation Cookie Set" loading="lazy">
-        </div>
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Bluey Cookies">
-          <img src="assets/Bluey%20Cookies.jpg" alt="Bluey Cookies" loading="lazy">
-        </div>
-        <div class="gallery-item" tabindex="0" role="button" aria-label="View Tangled Cookie Set">
+        </figure>
+        <figure class="gallery-item">
+          <img src="assets/Ice%20Cream%20Cookies.jpg" alt="Ice Cream Cookies" loading="lazy">
+        </figure>
+        <figure class="gallery-item">
           <img src="assets/Tangled%20Set.jpg" alt="Tangled Cookie Set" loading="lazy">
-        </div>
+        </figure>
       </div>
+      <p class="gallery-more"><a href="products/" class="btn btn-primary">See Products &amp; Pricing</a></p>
     </div>
   </section>
 
@@ -84,13 +179,12 @@
     <div class="container">
       <div class="about-teaser">
         <div class="about-image-wrap">
-          <img data-src="assets/About%20Me.jpg" src="" alt="Raquel, founder of Bachata Bakery" loading="lazy">
+          <img src="assets/About%20Me.jpg" alt="Raquel, founder of Bachata Bakery" loading="lazy">
         </div>
         <div class="about-text">
-          <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Meet the Baker</p>
           <h2 class="display-sm">Baked with heritage,<br>served with heart.</h2>
-          <p class="body-lg">I'm Raquel — a Bronx-born Dominican and Puerto Rican baker based in Delaware. Bachata Bakery was born in 2020 out of resilience, love, and a deep connection to Latin Caribbean culture. Just like the music, my treats tell stories.</p>
-          <a href="meet-the-baker.html" class="btn btn-primary">My Story</a>
+          <p class="body-lg">I'm Raquel â€” a Bronx-born Dominican and Puerto Rican baker based in Delaware. Bachata Bakery was born in 2020 out of resilience, love, and a deep connection to Latin Caribbean culture. Just like the music, my treats tell stories.</p>
+          <a href="meet-the-baker/" class="btn btn-primary">My Story</a>
         </div>
       </div>
     </div>
@@ -98,14 +192,14 @@
 
   <div class="cta-banner">
     <h2 class="display-sm">Ready to order?</h2>
-    <p class="body-md">Custom sugar cookies, tres leches cakes, and weekly cinnamon roll presales — made with love and a little Latin heat.</p>
-    <a href="order.html" class="btn btn-secondary mt-5">Place an Order</a>
+    <p class="body-md">Custom sugar cookies, tres leches cakes, and weekly cinnamon roll presales â€” made with love and a little Latin heat.</p>
+    <a href="order/" class="btn btn-secondary mt-5">Order Now</a>
   </div>
 
   <footer class="footer">
     <div class="footer-inner">
       <div>
-        <div class="footer-logo"><img src="assets/logo-without-background-web.png" alt="Bachata Bakery"></div>
+        <div class="footer-logo"><img src="assets/logo-white-web.png" alt="Bachata Bakery"></div>
         <p style="margin-top:16px;font-size:0.9rem;opacity:0.7">Authentic Latin-inspired desserts<br>made with love.</p>
       </div>
       <div>
@@ -113,63 +207,24 @@
         <p><a href="mailto:info@bachatabakery.com"><i class="fa-regular fa-envelope"></i> info@bachatabakery.com</a></p>
         <p style="margin-top:8px"><a href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i> @bachatabakery</a></p>
         <p><a href="https://www.tiktok.com/@bachatabakery" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i> @bachatabakery</a></p>
+        <p><a href="https://www.facebook.com/people/Bachata-Bakery/61571899555540/" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i> Bachata Bakery</a></p>
       </div>
       <div>
         <h4>Pickup Locations</h4>
-        <p>Middletown, DE — Fri 3–7 PM</p>
-        <p style="margin-top:4px">West Chester, PA — Sat 1–2:30 PM</p>
+        <p>Middletown, DE â€” Fri 3â€“6 PM</p>
+        <p style="margin-top:4px">Artisan Exchange, West Chester, PA â€” Sat 10 AMâ€“1 PM</p>
       </div>
       <div>
         <h4>Quick Links</h4>
-        <p><a href="products.html">Products &amp; Pricing</a></p>
-        <p><a href="faq.html">FAQ</a></p>
-        <p><a href="meet-the-baker.html">Meet the Baker</a></p>
-        <a href="order.html" class="btn btn-primary" style="display:inline-block;margin-top:var(--space-3)">Order Now</a>
+        <p><a href="products/">Products &amp; Pricing</a></p>
+        <p><a href="faq/">FAQ</a></p>
+        <p><a href="meet-the-baker/">Meet the Baker</a></p>
+        <a href="order/" class="btn btn-primary" style="display:inline-block;margin-top:var(--space-3)">Order Now</a>
       </div>
     </div>
     <div class="footer-bottom"><p>&copy; 2026 Bachata Bakery. All rights reserved.</p></div>
   </footer>
 
-  <div class="gallery-modal" id="gallery-modal" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
-    <div class="gallery-modal-backdrop"></div>
-    <div class="gallery-modal-content">
-      <button class="gallery-modal-close" aria-label="Close image">&times;</button>
-      <img class="gallery-modal-img" src="" alt="">
-    </div>
-  </div>
-
   <script src="script.js"></script>
-  <script>
-    (function () {
-      var modal = document.getElementById('gallery-modal');
-      var modalImg = modal.querySelector('.gallery-modal-img');
-      var closeBtn = modal.querySelector('.gallery-modal-close');
-      var backdrop = modal.querySelector('.gallery-modal-backdrop');
-
-      function openModal(img) {
-        modalImg.src = img.src;
-        modalImg.alt = img.alt;
-        modal.removeAttribute('hidden');
-        document.body.style.overflow = 'hidden';
-        closeBtn.focus();
-      }
-
-      function closeModal() {
-        modal.setAttribute('hidden', '');
-        document.body.style.overflow = '';
-      }
-
-      document.querySelectorAll('.gallery-item').forEach(function (item) {
-        item.addEventListener('click', function () { openModal(item.querySelector('img')); });
-        item.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(item.querySelector('img')); }
-        });
-      });
-
-      closeBtn.addEventListener('click', closeModal);
-      backdrop.addEventListener('click', closeModal);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
-    })();
-  </script>
 </body>
 </html>
