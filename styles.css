@@ -410,17 +410,31 @@ ul, ol { list-style: none; }
   justify-content: center;
 }
 @media (max-width: 900px) {
+  /* Full-bleed video under a lighter brown veil so motion reads through */
   .hero-bg-video {
     width: 100%;
-    opacity: 0.45;
+    left: 0;
+    right: 0;
+    opacity: 0.9;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .hero-fade {
     background: linear-gradient(
       180deg,
-      rgba(44, 31, 26, 0.94) 0%,
-      rgba(44, 31, 26, 0.78) 40%,
-      rgba(44, 31, 26, 0.88) 100%
+      rgba(44, 31, 26, 0.62) 0%,
+      rgba(44, 31, 26, 0.42) 42%,
+      rgba(44, 31, 26, 0.55) 100%
     );
+  }
+  .hero-brand,
+  .hero-tagline {
+    text-shadow:
+      0 2px 22px rgba(44, 31, 26, 0.75),
+      0 1px 6px rgba(44, 31, 26, 0.55);
+  }
+  .hero-content .body-lg {
+    text-shadow: 0 1px 14px rgba(44, 31, 26, 0.7);
   }
   .preorder-facts { grid-template-columns: 1fr 1fr; }
 }
