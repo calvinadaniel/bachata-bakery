@@ -1,0 +1,14 @@
+# Bachata Bakery — folder-based URLs (/products/, /faq/, …)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Legacy: /page.html → /page/
+    RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+    RewriteRule ^ %1/ [R=301,L]
+
+    # Add trailing slash for page directories (not files)
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{REQUEST_URI} !/$
+    RewriteRule ^(.+)$ $1/ [R=301,L]
+</IfModule>
