@@ -96,7 +96,7 @@
   </nav>
 
   <section class="hero">
-    <video class="hero-bg-video" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+    <video class="hero-bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" aria-hidden="true">
       <source src="assets/videos/hero-bg.mp4" type="video/mp4">
     </video>
     <div class="hero-fade" aria-hidden="true"></div>
@@ -108,11 +108,17 @@
           <p class="body-lg">Treats that tell stories — made with Amor. Cinnamon rolls, tres leches, and cookie presets drop fresh every week.</p>
         </div>
 
-        <aside class="preorder-strip" aria-label="Weekly preorder details">
+        <aside
+          class="preorder-strip"
+          id="preorder-strip"
+          aria-label="Weekly preorder details"
+          data-preorder-state="loading"
+          aria-busy="true"
+        >
           <div class="preorder-window">
             <span class="preorder-label">Order window</span>
-            <span class="preorder-days">Sun – Wed</span>
-            <span class="preorder-sub">Until sold out</span>
+            <span class="preorder-days" id="preorder-days">Sun – Wed</span>
+            <span class="preorder-sub" id="preorder-window-sub">Until sold out</span>
           </div>
 
           <div class="preorder-facts">
@@ -145,11 +151,68 @@
             </div>
           </div>
 
-          <div class="preorder-cta">
-            <a href="order/" class="btn btn-primary">Order Now →</a>
-            <span class="preorder-sub">Preorder closes Wednesday</span>
+          <div class="preorder-cta is-open" id="preorder-cta">
+            <p class="preorder-cta-headline" id="preorder-cta-headline" hidden>Orders reopen Sunday</p>
+            <a href="order/" class="btn btn-primary" id="preorder-order-btn">Order Now →</a>
+            <button type="button" class="btn btn-primary preorder-cta-notify" id="preorder-notify-btn" hidden aria-haspopup="dialog" aria-controls="notify-dialog">
+              Notify Me When Orders Open
+            </button>
+            <span class="preorder-sub" id="preorder-cta-sub">Orders close Wednesday at 11:59 PM</span>
+            <time class="preorder-countdown" id="preorder-countdown" hidden aria-live="polite"></time>
           </div>
         </aside>
+        <script>
+          /* Immediate Sun–Wed gate (America/New_York) — prevents wrong CTA flash before assets/js/preorder-window.js */
+          (function () {
+            try {
+              var strip = document.getElementById('preorder-strip');
+              if (!strip) return;
+              var wd = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'America/New_York',
+                weekday: 'short'
+              }).format(new Date());
+              var open = wd === 'Sun' || wd === 'Mon' || wd === 'Tue' || wd === 'Wed';
+              strip.setAttribute('data-preorder-state', open ? 'open' : 'closed');
+              strip.removeAttribute('aria-busy');
+              if (!open) {
+                var headline = document.getElementById('preorder-cta-headline');
+                var orderBtn = document.getElementById('preorder-order-btn');
+                var notifyBtn = document.getElementById('preorder-notify-btn');
+                var sub = document.getElementById('preorder-cta-sub');
+                var days = document.getElementById('preorder-days');
+                var windowSub = document.getElementById('preorder-window-sub');
+                var countdown = document.getElementById('preorder-countdown');
+                if (headline) { headline.hidden = false; headline.textContent = 'Orders reopen Sunday'; }
+                if (orderBtn) orderBtn.hidden = true;
+                if (notifyBtn) notifyBtn.hidden = false;
+                if (sub) sub.hidden = true;
+                if (days) days.textContent = 'Closed';
+                if (windowSub) windowSub.textContent = 'Reopens Sunday';
+                if (countdown) countdown.hidden = false;
+              }
+            } catch (e) { /* keep loading defaults */ }
+          })();
+        </script>
+
+        <dialog class="notify-dialog" id="notify-dialog" aria-labelledby="notify-dialog-title">
+          <form class="notify-dialog-inner" id="notify-form" action="#" method="post" novalidate>
+            <h2 class="notify-dialog-title" id="notify-dialog-title">Get notified</h2>
+            <p class="notify-dialog-lead">We’ll email (or text) you when the next Sunday–Wednesday order window opens.</p>
+            <label class="notify-field">
+              <span>Email</span>
+              <input type="email" name="email" id="notify-email" required autocomplete="email" placeholder="you@example.com">
+            </label>
+            <label class="notify-field">
+              <span>Phone <em>(optional, for SMS)</em></span>
+              <input type="tel" name="phone" id="notify-phone" autocomplete="tel" placeholder="(302) 555-0100" inputmode="tel">
+            </label>
+            <p class="notify-status" id="notify-status" hidden role="status"></p>
+            <div class="notify-actions">
+              <button type="button" class="btn btn-secondary" id="notify-cancel">Cancel</button>
+              <button type="submit" class="btn btn-primary">Notify Me</button>
+            </div>
+          </form>
+        </dialog>
       </div>
     </div>
   </section>
@@ -226,5 +289,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="assets/js/preorder-window.js"></script>
 </body>
 </html>

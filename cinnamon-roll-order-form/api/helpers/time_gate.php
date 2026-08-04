@@ -2,13 +2,15 @@
 /**
  * api/helpers/time_gate.php
  *
- * Time-gate logic for the Friday–Sunday order window.
- * All times are evaluated in the BAKERY_TIMEZONE from .env.
+ * Weekly order-window helpers. Orders are accepted Sunday 12:00 AM through
+ * Wednesday 11:59:59 PM in the bakery timezone (BAKERY_TIMEZONE from .env,
+ * default America/New_York). Capacity still rolls on a Friday-keyed window_id.
  *
  * Public API:
  *   isFormOpen(): bool
- *   getNextOpenTime(): DateTimeImmutable   — next Friday midnight
- *   getCurrentWindowId(): string           — Friday date (Y-m-d) of the active window
+ *   getClosesAt(): DateTimeImmutable      — Wed 23:59:59 of the active order week
+ *   getNextOpenTime(): DateTimeImmutable  — next Sunday 00:00:00
+ *   getCurrentWindowId(): string          — Friday date (Y-m-d) of the active window
  *
  * Requires db.php to have been loaded first (ensures .env is loaded).
  */
@@ -29,47 +31,65 @@ function _bakeryTz(): DateTimeZone
 
 /**
  * Is the order form open right now?
- * Open window: Friday 12:00:00 AM through Sunday 11:59:59 PM (bakery timezone).
+ * Open: Sunday (N=7) through Wednesday (N=3), inclusive, full calendar days.
+ * Closed: Thursday–Saturday.
  */
 function isFormOpen(): bool
 {
     $now = new DateTimeImmutable('now', _bakeryTz());
-    $dow = (int) $now->format('N'); // ISO: 1=Mon … 5=Fri, 6=Sat, 7=Sun
-    return $dow >= 5;
+    $dow = (int) $now->format('N'); // 1=Mon … 7=Sun
+
+    return $dow === 7 || $dow <= 3;
 }
 
 /**
- * Returns the DateTimeImmutable for the next Friday at 00:00:00.
- *
- * - If currently closed (Mon–Thu): this coming Friday.
- * - If currently open  (Fri–Sun):  next week's Friday (for the countdown
- *   shown when all slots sell out mid-weekend).
+ * Wednesday 11:59:59 PM of the current (or most recent) order week.
+ * Used by status.php so the homepage can say when the window closes.
+ */
+function getClosesAt(): DateTimeImmutable
+{
+    $now = new DateTimeImmutable('now', _bakeryTz());
+    $dow = (int) $now->format('N'); // 1=Mon … 7=Sun
+
+    // Days from today to this week's Wednesday
+    $daysToWed = match (true) {
+        $dow === 7 => 3,          // Sun → Wed
+        $dow <= 3  => 3 - $dow,   // Mon–Wed
+        default    => 3 - $dow,   // Thu–Sat → previous Wed (negative)
+    };
+
+    return $now->modify(($daysToWed >= 0 ? '+' : '') . $daysToWed . ' days')
+               ->setTime(23, 59, 59);
+}
+
+/**
+ * Next Sunday 00:00:00 when the order window reopens.
+ * When currently open (Sun–Wed), returns the following Sunday.
+ * When closed (Thu–Sat), returns the upcoming Sunday.
  */
 function getNextOpenTime(): DateTimeImmutable
 {
     $now = new DateTimeImmutable('now', _bakeryTz());
-    $dow = (int) $now->format('N');
+    $dow = (int) $now->format('N'); // 1=Mon … 7=Sun
 
-    if ($dow < 5) {
-        // Mon(1)–Thu(4): days until this Friday
-        $daysUntil = 5 - $dow;
-    } else {
-        // Fri(5)–Sun(7): days until NEXT Friday
-        // Fri→7, Sat→6, Sun→5
-        $daysUntil = 12 - $dow;
+    if ($dow === 7) {
+        // Already Sunday — next open is next week
+        return $now->modify('+7 days')->setTime(0, 0, 0);
     }
 
-    return $now->modify("+{$daysUntil} days")->setTime(0, 0, 0);
+    // Mon–Sat: upcoming Sunday
+    $daysUntilSunday = 7 - $dow;
+    return $now->modify("+{$daysUntilSunday} days")->setTime(0, 0, 0);
 }
 
 /**
- * Returns the DATE string (Y-m-d) of the Friday that opened the current
- * or upcoming window. Used as window_id in the DB.
+ * Returns the DATE string (Y-m-d) of the Friday that keys the current
+ * weekly capacity window. Used as window_id in the DB.
  *
  * - Fri: today.
  * - Sat: yesterday.
  * - Sun: two days ago.
- * - Mon–Thu: the upcoming Friday (for reference — no active window yet).
+ * - Mon–Thu: the upcoming Friday (orders count toward that weekend's window).
  */
 function getCurrentWindowId(): string
 {

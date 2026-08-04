@@ -1,8 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initLazyLoad();
+  initHeroVideo();
   document.querySelectorAll('.carousel').forEach(initCarousel);
 });
+
+/** iOS Safari/Chrome often paints the first frame but never starts muted autoplay. */
+function initHeroVideo() {
+  const video = document.querySelector('.hero-bg-video');
+  if (!video) return;
+
+  const tryPlay = () => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    const p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  };
+
+  tryPlay();
+  video.addEventListener('loadeddata', tryPlay, { once: true });
+  video.addEventListener('canplay', tryPlay, { once: true });
+  window.addEventListener('pageshow', tryPlay);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') tryPlay();
+  });
+  const unlock = () => {
+    tryPlay();
+    window.removeEventListener('touchstart', unlock);
+    window.removeEventListener('click', unlock);
+  };
+  window.addEventListener('touchstart', unlock, { once: true, passive: true });
+  window.addEventListener('click', unlock, { once: true });
+}
 
 function initNav() {
   const nav = document.querySelector('.nav');

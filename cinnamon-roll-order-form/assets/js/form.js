@@ -27,7 +27,7 @@ let state = {
   ordersRemaining: 0,
   forceClosed:     false,
   closedReason:    'time_gate',   // 'time_gate' | 'sold_out' | 'force_closed'
-  nextOpen:        null,          // Date — next Friday midnight (bakery tz)
+  nextOpen:        null,          // Date — next weekly capacity window
   windowFriday:    null,          // Date — this window's Friday (derived)
   qty:             1,
 };
@@ -109,8 +109,11 @@ function applyState(data) {
   state.closedReason    = data.closed_reason ?? 'time_gate';
   state.nextOpen        = data.next_open ? new Date(data.next_open) : null;
 
-  // Derive this window's Friday from nextOpen (which is always next Friday when open)
-  if (state.open && state.nextOpen) {
+  // Prefer server window_id (Friday Y-m-d). next_open is Sunday reopen, not Friday.
+  if (data.window_id && /^\d{4}-\d{2}-\d{2}$/.test(data.window_id)) {
+    const [y, m, d] = data.window_id.split('-').map(Number);
+    state.windowFriday = new Date(y, m - 1, d);
+  } else if (state.open && state.nextOpen) {
     const friday = new Date(state.nextOpen);
     friday.setDate(friday.getDate() - 7);
     state.windowFriday = friday;
@@ -165,11 +168,11 @@ function updateClosedMessage() {
                  || state.closedReason === 'force_closed';
 
   if (isSoldOut) {
-    dom.closedHeading.textContent = 'Sold Out This Weekend';
-    dom.closedSub.textContent     = 'All rolls are spoken for. Join us again next Friday!';
+    dom.closedHeading.textContent = 'Sold Out This Week';
+    dom.closedSub.textContent     = 'All rolls are spoken for. Check back when the next batch opens!';
   } else {
-    dom.closedHeading.textContent = 'Orders Open Every Friday';
-    dom.closedSub.textContent     = 'Fresh cinnamon rolls, made to order — pick up on Saturday or Sunday.';
+    dom.closedHeading.textContent = 'Orders Reopen Sunday';
+    dom.closedSub.textContent     = 'Weekly preorders run Sunday–Wednesday. Fresh rolls, made to order.';
   }
 
   if (state.nextOpen) {
@@ -405,9 +408,9 @@ async function handleSubmit(e) {
 
 function handleOrderError(code, message) {
   const errorMessages = {
-    form_closed:    'Orders are no longer open. Please check back this Friday.',
+    form_closed:    'Orders are no longer open. Please check back soon.',
     sold_out_rolls: 'Not enough rolls remaining for your order size. Try a smaller quantity.',
-    sold_out_orders:'All order slots are filled for this weekend. See you next Friday!',
+    sold_out_orders:'All order slots are filled for this weekend. Check back when the next batch opens!',
     card_declined:  'Your card was declined. Please try a different card.',
     invalid_input:  'Please check your information and try again.',
     server_error:   'Something went wrong on our end. Please try again in a moment.',
@@ -676,8 +679,13 @@ function applyPreviewState() {
     rolls_remaining:  75,
     orders_remaining: 30,
     force_closed:     false,
-    closed_reason:    'time_gate',
+    closed_reason:    null,
     next_open:        nextFriday.toISOString(),
+    window_id:        [
+      friday.getFullYear(),
+      String(friday.getMonth() + 1).padStart(2, '0'),
+      String(friday.getDate()).padStart(2, '0'),
+    ].join('-'),
   });
 }
 

@@ -82,7 +82,7 @@ try {
 
     // 3. Server-side time gate (re-checked here even if frontend already checked)
     if (!isFormOpen()) {
-        bail(403, 'form_closed', 'Orders are not open right now. Check back Friday!');
+        bail(403, 'form_closed', 'Orders are not open right now. Please check back soon.');
     }
 
     $windowId = getCurrentWindowId();
@@ -202,7 +202,7 @@ function reserveOrderSlot(
         // Force-closed check
         if ((int) $cap['force_closed'] === 1) {
             $pdo->rollBack();
-            bail(403, 'form_closed', 'Orders are closed for this weekend.');
+            bail(403, 'form_closed', 'Orders are closed right now.');
         }
 
         // Orders cap check

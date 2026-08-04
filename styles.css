@@ -409,6 +409,132 @@ ul, ol { list-style: none; }
   width: 100%;
   justify-content: center;
 }
+.preorder-cta-headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.0625rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+  margin: 0;
+}
+.preorder-countdown {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  min-height: 1.1em;
+}
+.preorder-strip[data-preorder-state="loading"] .preorder-cta {
+  opacity: 0.72;
+}
+.preorder-strip[data-preorder-state="closed"] .preorder-days {
+  color: var(--primary);
+}
+.preorder-strip[data-preorder-state="closed"] .preorder-cta .btn {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.25;
+}
+/* Anti-flash: CSS mirrors state attr set by early inline script / JS */
+.preorder-strip[data-preorder-state="closed"] #preorder-order-btn,
+.preorder-strip[data-preorder-state="closed"] #preorder-cta-sub,
+.preorder-strip[data-preorder-state="open"] #preorder-notify-btn,
+.preorder-strip[data-preorder-state="open"] #preorder-cta-headline,
+.preorder-strip[data-preorder-state="open"] #preorder-countdown {
+  display: none !important;
+}
+.preorder-strip[data-preorder-state="closed"] #preorder-notify-btn,
+.preorder-strip[data-preorder-state="closed"] #preorder-cta-headline,
+.preorder-strip[data-preorder-state="closed"] #preorder-countdown {
+  display: block;
+}
+.preorder-strip[data-preorder-state="closed"] #preorder-notify-btn {
+  display: inline-flex !important;
+}
+
+/* Notify-me dialog */
+.notify-dialog {
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0;
+  max-width: min(420px, calc(100vw - 2rem));
+  width: 100%;
+  background: var(--surface-container-lowest);
+  color: var(--on-surface);
+  box-shadow: var(--shadow-card);
+}
+.notify-dialog::backdrop {
+  background: rgba(44, 31, 26, 0.55);
+}
+.notify-dialog-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+.notify-dialog-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.notify-dialog-lead {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: rgba(44, 31, 26, 0.72);
+  margin: 0;
+}
+.notify-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.notify-field em {
+  font-style: normal;
+  font-weight: 500;
+  color: rgba(44, 31, 26, 0.5);
+}
+.notify-field input {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(44, 31, 26, 0.14);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--on-surface);
+}
+.notify-field input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.notify-status {
+  font-size: 0.875rem;
+  margin: 0;
+  color: var(--tertiary);
+}
+.notify-status.is-error {
+  color: var(--rose);
+}
+.notify-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+.notify-actions .btn {
+  flex: 1 1 auto;
+  justify-content: center;
+}
 @media (max-width: 900px) {
   /* Full-bleed video under a lighter brown veil so motion reads through */
   .hero-bg-video {

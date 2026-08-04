@@ -2,15 +2,21 @@
 /**
  * api/status.php
  *
- * GET — Returns the current form state. Polled by the frontend every 60 s.
+ * GET — Returns the current form state. Polled by the order form every 60 s
+ * and by the marketing homepage on load.
  *
  * Response shape:
  * {
  *   "open":             bool,
- *   "next_open":        ISO 8601 string (next Friday midnight, bakery timezone),
+ *   "next_open":        ISO 8601 — next Sunday 00:00 (bakery timezone),
+ *   "closes_at":        ISO 8601 — Wed 23:59:59 of the active order week,
+ *   "reopens_at":       ISO 8601 — alias of next_open (homepage countdown),
+ *   "window_id":        string — Friday Y-m-d capacity window key,
  *   "rolls_remaining":  int,
  *   "orders_remaining": int,
- *   "force_closed":     bool
+ *   "force_closed":     bool,
+ *   "closed_reason":    "time_gate"|"sold_out"|"force_closed"|null,
+ *   "timezone":         string
  * }
  *
  * Always returns JSON. On server error returns HTTP 500 with
@@ -20,6 +26,9 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET');
+header('Cache-Control: no-store');
 
 // Only GET allowed
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -35,17 +44,22 @@ require_once __DIR__ . '/helpers/cap.php';
 try {
     $formOpen  = isFormOpen();
     $nextOpen  = getNextOpenTime()->format(DateTimeInterface::ATOM);
+    $closesAt  = getClosesAt()->format(DateTimeInterface::ATOM);
     $windowId  = getCurrentWindowId();
+    $tzName    = ($_ENV['BAKERY_TIMEZONE'] ?? 'America/New_York');
 
     if (!$formOpen) {
-        // Outside the Friday–Sunday window — no active cap row to query.
         echo json_encode([
             'open'             => false,
             'next_open'        => $nextOpen,
+            'closes_at'        => $closesAt,
+            'reopens_at'       => $nextOpen,
+            'window_id'        => $windowId,
             'rolls_remaining'  => 0,
             'orders_remaining' => 0,
             'force_closed'     => false,
             'closed_reason'    => 'time_gate',
+            'timezone'         => $tzName,
         ]);
         exit;
     }
@@ -61,10 +75,14 @@ try {
     echo json_encode([
         'open'             => !$soldOut,
         'next_open'        => $nextOpen,
+        'closes_at'        => $closesAt,
+        'reopens_at'       => $nextOpen,
+        'window_id'        => $windowId,
         'rolls_remaining'  => rollsRemaining($cap),
         'orders_remaining' => ordersRemaining($cap),
         'force_closed'     => (bool) $cap['force_closed'],
         'closed_reason'    => $closedReason,
+        'timezone'         => $tzName,
     ]);
 
 } catch (Throwable $e) {
