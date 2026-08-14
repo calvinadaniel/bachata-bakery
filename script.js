@@ -10,7 +10,12 @@ function initHeroVideo() {
   const video = document.querySelector('.hero-bg-video');
   if (!video) return;
 
+  const LOOP_PAUSE_MS = 3000;
+  let waitingToLoop = false;
+  let loopPauseTimer = null;
+
   const tryPlay = () => {
+    if (waitingToLoop) return;
     video.muted = true;
     video.defaultMuted = true;
     video.setAttribute('muted', '');
@@ -20,6 +25,16 @@ function initHeroVideo() {
     const p = video.play();
     if (p && typeof p.catch === 'function') p.catch(() => {});
   };
+
+  video.addEventListener('ended', () => {
+    waitingToLoop = true;
+    clearTimeout(loopPauseTimer);
+    loopPauseTimer = setTimeout(() => {
+      waitingToLoop = false;
+      video.currentTime = 0;
+      tryPlay();
+    }, LOOP_PAUSE_MS);
+  });
 
   tryPlay();
   video.addEventListener('loadeddata', tryPlay, { once: true });

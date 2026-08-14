@@ -228,14 +228,15 @@ ul, ol { list-style: none; }
   top: 0;
   right: 0;
   bottom: 0;
-  width: 72%;
+  left: auto;
+  width: 46%;
   height: 100%;
   object-fit: cover;
   object-position: center center;
   z-index: 0;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.25) 18%, rgba(0,0,0,0.7) 36%, #000 52%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.25) 18%, rgba(0,0,0,0.7) 36%, #000 52%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.25) 12%, rgba(0,0,0,0.7) 28%, #000 42%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.25) 12%, rgba(0,0,0,0.7) 28%, #000 42%);
 }
 .hero-fade {
   position: absolute;
@@ -245,11 +246,10 @@ ul, ol { list-style: none; }
   background: linear-gradient(
     90deg,
     #2c1f1a 0%,
-    #2c1f1a 26%,
-    rgba(44, 31, 26, 0.9) 38%,
-    rgba(44, 31, 26, 0.6) 50%,
-    rgba(44, 31, 26, 0.3) 62%,
-    rgba(44, 31, 26, 0.1) 74%,
+    #2c1f1a 42%,
+    rgba(44, 31, 26, 0.88) 52%,
+    rgba(44, 31, 26, 0.45) 62%,
+    rgba(44, 31, 26, 0.12) 74%,
     rgba(44, 31, 26, 0) 86%
   );
 }
