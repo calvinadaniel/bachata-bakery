@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initLazyLoad();
   initHeroVideo();
+  initGalleryVideos();
   document.querySelectorAll('.carousel').forEach(initCarousel);
 });
 
@@ -10,12 +11,7 @@ function initHeroVideo() {
   const video = document.querySelector('.hero-bg-video');
   if (!video) return;
 
-  const LOOP_PAUSE_MS = 3000;
-  let waitingToLoop = false;
-  let loopPauseTimer = null;
-
   const tryPlay = () => {
-    if (waitingToLoop) return;
     video.muted = true;
     video.defaultMuted = true;
     video.setAttribute('muted', '');
@@ -25,16 +21,6 @@ function initHeroVideo() {
     const p = video.play();
     if (p && typeof p.catch === 'function') p.catch(() => {});
   };
-
-  video.addEventListener('ended', () => {
-    waitingToLoop = true;
-    clearTimeout(loopPauseTimer);
-    loopPauseTimer = setTimeout(() => {
-      waitingToLoop = false;
-      video.currentTime = 0;
-      tryPlay();
-    }, LOOP_PAUSE_MS);
-  });
 
   tryPlay();
   video.addEventListener('loadeddata', tryPlay, { once: true });
@@ -48,6 +34,36 @@ function initHeroVideo() {
     window.removeEventListener('touchstart', unlock);
     window.removeEventListener('click', unlock);
   };
+  window.addEventListener('touchstart', unlock, { once: true, passive: true });
+  window.addEventListener('click', unlock, { once: true });
+}
+
+function initGalleryVideos() {
+  const videos = document.querySelectorAll('.gallery-item video');
+  if (!videos.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const tryPlay = (video) => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
+    video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    const p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(() => {});
+  };
+
+  videos.forEach((video) => {
+    tryPlay(video);
+    video.addEventListener('loadeddata', () => tryPlay(video), { once: true });
+    video.addEventListener('canplay', () => tryPlay(video), { once: true });
+  });
+  window.addEventListener('pageshow', () => videos.forEach(tryPlay));
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') videos.forEach(tryPlay);
+  });
+  const unlock = () => videos.forEach(tryPlay);
   window.addEventListener('touchstart', unlock, { once: true, passive: true });
   window.addEventListener('click', unlock, { once: true });
 }
