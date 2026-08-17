@@ -1,5 +1,5 @@
 /**
- * Bachata Bakery — homepage weekly preorder window
+ * Bachata Bakery — weekly preorder window
  *
  * Prefer /api/status.php (same endpoint the order form polls). Falls back to a
  * client-side mirror of isFormOpen() / getNextOpenTime() / getClosesAt() when
@@ -7,6 +7,10 @@
  *
  * Timezone: America/New_York (BAKERY_TIMEZONE default).
  * Open: Sunday 00:00 – Wednesday 23:59:59. Closed: Thursday–Saturday.
+ *
+ * Used on:
+ *   - homepage hero strip (#preorder-strip)
+ *   - order page form gate (#presale-form / #presale-closed / #jump-btn-wrap)
  *
  * Optional override before this script:
  *   window.BACHATA_API_BASE = 'https://bachatabakery.com/cinnamon-roll-order-form';
@@ -186,6 +190,26 @@
     }
   }
 
+  function renderOrderFormGate() {
+    var formSection = $('presale-form');
+    var closedMsg = $('presale-closed');
+    var jumpBtn = $('jump-btn-wrap');
+    var openCallout = $('presale-open-callout');
+    if (!formSection && !closedMsg && !jumpBtn) return;
+
+    if (state.open) {
+      if (formSection) formSection.style.display = '';
+      if (closedMsg) closedMsg.style.display = 'none';
+      if (jumpBtn) jumpBtn.style.display = '';
+      if (openCallout) openCallout.style.display = '';
+    } else {
+      if (formSection) formSection.style.display = 'none';
+      if (closedMsg) closedMsg.style.display = 'block';
+      if (jumpBtn) jumpBtn.style.display = 'none';
+      if (openCallout) openCallout.style.display = 'none';
+    }
+  }
+
   function render() {
     var strip = $('preorder-strip');
     var cta = $('preorder-cta');
@@ -196,6 +220,9 @@
     var windowSub = $('preorder-window-sub');
     var countdown = $('preorder-countdown');
     var headline = $('preorder-cta-headline');
+
+    renderOrderFormGate();
+
     if (!strip || !cta || !orderBtn || !notifyBtn || !sub) return;
 
     strip.setAttribute('data-preorder-state', state.open ? 'open' : 'closed');

@@ -99,7 +99,7 @@
       <div id="tab-order" class="tab-panel active" role="tabpanel">
 
         <!-- Presale callout -->
-        <div class="callout" style="margin-bottom:var(--space-6)">
+        <div class="callout" style="margin-bottom:var(--space-6)" id="presale-open-callout">
           <div class="callout-title">Ordering is open</div>
           <p class="body-md">Weekly preorders open <strong>Sunday–Wednesday</strong> (or until sold out). Pickup the following week — details confirmed by email.</p>
         <div class="pickup-grid">
@@ -241,11 +241,11 @@
           </div>
         </details>
 
-        <!-- Presale closed message (shown when outside the window) -->
+        <!-- Presale closed message (shown Thursday–Saturday) -->
         <div id="presale-closed" style="display:none;margin-top:var(--space-6)">
           <div class="callout" style="border-left:4px solid var(--error,#c0392b)">
             <div class="callout-title">Presale is currently closed</div>
-            <p class="body-md">Ordering is temporarily unavailable. Check back soon to place your order — we can't wait to make something delicious for you!</p>
+            <p class="body-md">Weekly preorders open <strong>Sunday–Wednesday</strong> (or until sold out). Check back then to place your order — we can't wait to make something delicious for you!</p>
           </div>
         </div>
 
@@ -563,6 +563,29 @@
   </footer>
 
   <script src="../script.js"></script>
+  <script>
+    /* Immediate Sun–Wed gate (America/New_York) — matches assets/js/preorder-window.js */
+    (function () {
+      try {
+        var wd = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/New_York',
+          weekday: 'short'
+        }).format(new Date());
+        var open = wd === 'Sun' || wd === 'Mon' || wd === 'Tue' || wd === 'Wed';
+        if (!open) {
+          var formSection = document.getElementById('presale-form');
+          var closedMsg = document.getElementById('presale-closed');
+          var jumpBtn = document.getElementById('jump-btn-wrap');
+          var openCallout = document.getElementById('presale-open-callout');
+          if (formSection) formSection.style.display = 'none';
+          if (closedMsg) closedMsg.style.display = 'block';
+          if (jumpBtn) jumpBtn.style.display = 'none';
+          if (openCallout) openCallout.style.display = 'none';
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script src="../assets/js/preorder-window.js"></script>
   <script>
     // Tab switching
     function activateTab(tabId) {
