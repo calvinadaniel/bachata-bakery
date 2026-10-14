@@ -78,9 +78,11 @@ function Assert-EnvFile([string]$Path) {
   $e = Read-EnvKeys $Path
   $problems = @()
   foreach ($k in 'SQUARE_APP_ID', 'SQUARE_LOCATION_ID', 'SQUARE_ACCESS_TOKEN', 'SQUARE_WEBHOOK_SIG_KEY', 'WEBHOOK_URL',
-                 'DB_NAME', 'DB_USER', 'DB_PASS', 'HCAPTCHA_SITE_KEY', 'HCAPTCHA_SECRET', 'ADMIN_PASS') {
+                 'DB_NAME', 'DB_USER', 'DB_PASS', 'HCAPTCHA_SITE_KEY', 'ADMIN_PASS') {
     if (-not $e[$k]) { $problems += "$k is empty" }
   }
+  # Sandbox skips server-side verification when the secret is empty; production never does.
+  if (-not $IsDev -and -not $e['HCAPTCHA_SECRET']) { $problems += 'HCAPTCHA_SECRET is empty' }
   foreach ($k in 'DB_NAME', 'DB_USER') {
     if ($e[$k] -and $e[$k] -notlike "${Username}_*") { $problems += "$k must be a Hostinger database ($($Username)_...), not a local one" }
   }
