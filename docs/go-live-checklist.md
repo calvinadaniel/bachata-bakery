@@ -100,9 +100,10 @@ or the Hostinger CLI `hosting databases create`). Names and users come out as
 
 ## 6. Cut over from Jotform
 
-- [ ] Decide when to replace the Jotform embed on `/order/` with the native
-      form (copy the `order-demo` form markup into `order/index.html`, drop its
-      `noindex`, deploy). Until then `/order-demo/` stays unlisted (`noindex`).
+- [ ] The native form stays a **separate page** (`/order-demo/`); `/order/` keeps
+      the Jotform form. When ready, link to the native page from the site (and
+      drop its `noindex`) rather than editing `order/index.html`.
+      Until then `/order-demo/` stays unlisted (`noindex`).
 - [ ] After the first real week, export the CSV from the dashboard and compare
       with Square's sales report.
 
