@@ -2,27 +2,35 @@
 /**
  * admin/dashboard.php
  *
- * Owner dashboard: stats, cap override, force-close toggle, order table.
+ * Owner dashboard: window selector, stats, pause switch, sell-out limits,
+ * force-close toggle, order table.
  */
 
 declare(strict_types=1);
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/window.php';
 require_once dirname(__DIR__) . '/api/helpers/db.php';
 require_once dirname(__DIR__) . '/api/helpers/time_gate.php';
 require_once dirname(__DIR__) . '/api/helpers/cap.php';
+require_once dirname(__DIR__) . '/api/helpers/store.php';
 
 $pdo = db();
+$now = new DateTimeImmutable('now', _bakeryTz());
 
 // ---------------------------------------------------------------
-// Determine active window (most recent with data, or current)
+// Window being viewed (?window=YYYY-MM-DD, default: pickups now / orders now)
 // ---------------------------------------------------------------
-$winStmt  = $pdo->query('SELECT window_id FROM order_caps ORDER BY window_id DESC LIMIT 1');
-$windowId = ($w = $winStmt->fetchColumn()) !== false ? (string) $w : getCurrentWindowId();
+$windowId      = requestedWindowId($_GET['window'] ?? null);
+$windowOptions = adminWindowOptions($pdo, $now);
+if (!in_array($windowId, $windowOptions, true)) {
+    $windowOptions[] = $windowId;
+    rsort($windowOptions);
+}
+$store       = storeStatus($pdo, $now);
+$pausedUntil = getSetting($pdo, 'paused_until');
+$pauseMsg    = getSetting($pdo, 'pause_message');
+$isPaused    = $store['closed_reason'] === 'vacation';
 
 // ---------------------------------------------------------------
 // Stats
@@ -43,14 +51,14 @@ $like   = '%' . $search . '%';
 
 $orderStmt = $pdo->prepare(
     "SELECT order_ref, customer_name, customer_email, customer_phone,
-            product_variant, quantity, amount_cents, pickup_date,
+            product_variant, quantity, amount_cents, pickup_date, pickup_location, pickup_time,
             payment_status, created_at
        FROM orders
       WHERE window_id = :win
-        AND (:bare OR customer_name LIKE :q OR customer_email LIKE :q)
+        AND (:bare OR customer_name LIKE :q_name OR customer_email LIKE :q_email)
       ORDER BY created_at DESC"
 );
-$orderStmt->execute([':win' => $windowId, ':bare' => (int) ($search === ''), ':q' => $like]);
+$orderStmt->execute([':win' => $windowId, ':bare' => (int) ($search === ''), ':q_name' => $like, ':q_email' => $like]);
 $orders = $orderStmt->fetchAll();
 
 // ---------------------------------------------------------------
@@ -58,7 +66,10 @@ $orders = $orderStmt->fetchAll();
 // ---------------------------------------------------------------
 $flashMap = [
     'force_close_updated' => ['Form status updated.', 'success'],
-    'caps_updated'        => ['Caps updated successfully.', 'success'],
+    'caps_updated'        => ['Sell-out limits updated.', 'success'],
+    'paused'              => ['Orders paused. The order page now shows your message.', 'success'],
+    'resumed'             => ['Pause cleared — the weekly schedule is back on.', 'success'],
+    'pause_invalid'       => ['Pick a reopen date after today (within a year).', 'error'],
 ];
 $flash    = $flashMap[$_GET['msg'] ?? ''] ?? null;
 
@@ -84,9 +95,24 @@ function statusBadge(string $s): string
     return "<span style=\"background:{$bg};color:{$color};padding:3px 10px;border-radius:20px;"
          . "font-size:12px;font-weight:700;white-space:nowrap;\">{$label}</span>";
 }
-function esc(string $s): string
+function esc(?string $s): string
 {
-    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    return htmlspecialchars($s ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+}
+/** "Orders Oct 11–14 · pickup Oct 17–18" for a window id (its closing Wednesday). */
+function windowLabel(string $windowId): string
+{
+    $wed = new DateTimeImmutable($windowId);
+    return 'Orders ' . $wed->modify('-3 days')->format('M j') . '–' . $wed->format('j')
+         . ' · pickup ' . $wed->modify('+3 days')->format('M j') . '–' . $wed->modify('+4 days')->format('j');
+}
+function pickupLabel(array $o): string
+{
+    $parts = array_filter([
+        $o['pickup_date'] ? (new DateTimeImmutable($o['pickup_date']))->format('D M j') : null,
+        $o['pickup_time'] ? date('g:i A', strtotime($o['pickup_time'])) : null,
+    ]);
+    return implode(' ', $parts) ?: '—';
 }
 ?>
 <!DOCTYPE html>
@@ -154,6 +180,34 @@ function esc(string $s): string
       margin-bottom: 24px;
     }
     .flash-success { background: #E6F6F4; color: #157E73; border: 1.5px solid rgba(26,158,143,0.25); }
+    .flash-error   { background: #FDF0EF; color: #B91A17; border: 1.5px solid rgba(229,37,33,0.25); }
+    /* ── Window selector ── */
+    .window-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 24px; }
+    .window-bar .window-badge { margin-bottom: 0; }
+    .window-select {
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 14px;
+      color: #3B1A08;
+      background: #fff;
+      border: 1.5px solid #D9CEBF;
+      border-radius: 8px;
+    }
+    /* Pause card */
+    .pause-card { flex: 1; min-width: 280px; }
+    .pause-card textarea.num-input { font-size: 14px; font-weight: 400; resize: vertical; min-height: 64px; }
+    .pause-active { font-size: 14px; margin-bottom: 12px; }
+    .btn-ghost {
+      padding: 9px 18px;
+      background: #F5EFE6;
+      color: #3B1A08;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1.5px solid #D9CEBF;
+      border-radius: 8px;
+      cursor: pointer;
+    }
     /* ── Window badge ── */
     .window-badge {
       display: inline-block;
@@ -391,8 +445,8 @@ function esc(string $s): string
       Bachata Bakery <span>Owner Dashboard</span>
     </div>
     <nav class="topbar-nav">
-      <a href="/admin/actions/export-csv.php">↓ Export CSV</a>
-      <a href="/admin/logout.php">Sign out</a>
+      <a href="<?= esc(adminUrl('actions/export-csv.php') . '?window=' . $windowId) ?>">↓ Export CSV</a>
+      <a href="<?= esc(adminUrl('logout.php')) ?>">Sign out</a>
     </nav>
   </div>
 
@@ -404,14 +458,30 @@ function esc(string $s): string
       </p>
     <?php endif; ?>
 
-    <p class="window-badge">
-      Weekend window: <?= esc($windowId) ?>
-      <?= isFormOpen() ? '&nbsp;· <strong style="color:#1A9E8F;">Open</strong>' : '&nbsp;· Closed' ?>
-    </p>
+    <div class="window-bar">
+      <form method="GET" action="">
+        <label for="window-select" class="card-title" style="margin:0 8px 0 0;">Week</label>
+        <select id="window-select" class="window-select" name="window" onchange="this.form.submit()">
+          <?php foreach ($windowOptions as $opt): ?>
+            <option value="<?= esc($opt) ?>" <?= $opt === $windowId ? 'selected' : '' ?>><?= esc(windowLabel($opt)) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <noscript><button class="btn-search" type="submit">Show</button></noscript>
+      </form>
+      <p class="window-badge">
+        Order page right now:
+        <?php if ($store['open']): ?>
+          <strong style="color:#1A9E8F;">Open</strong> · <?= (int) $store['items_remaining'] ?> items left
+        <?php else: ?>
+          <strong style="color:#E52521;">Closed</strong>
+          (<?= esc(['vacation' => 'paused', 'time_gate' => 'outside Sun–Wed', 'force_closed' => 'force closed', 'sold_out' => 'sold out'][$store['closed_reason']] ?? $store['closed_reason']) ?>)
+        <?php endif; ?>
+      </p>
+    </div>
 
     <!-- ── Stats ── -->
     <section class="section">
-      <h2 class="section-title">This weekend</h2>
+      <h2 class="section-title"><?= esc(windowLabel($windowId)) ?></h2>
       <div class="stats-grid">
 
         <?php
@@ -422,7 +492,7 @@ function esc(string $s): string
         ?>
 
         <div class="stat-card">
-          <p class="stat-label">Rolls sold</p>
+          <p class="stat-label">Items sold</p>
           <p class="stat-value">
             <?= (int)$cap['rolls_sold'] ?>
             <small>/ <?= (int)$cap['rolls_max'] ?></small>
@@ -446,7 +516,7 @@ function esc(string $s): string
         </div>
 
         <div class="stat-card">
-          <p class="stat-label">Weekend revenue</p>
+          <p class="stat-label">Revenue (paid)</p>
           <p class="stat-value"><?= money($revenueCents) ?></p>
           <div class="bar-track" style="height:6px;">
             <div class="bar-fill" style="width:100%;background:#F4A228;"></div>
@@ -461,11 +531,50 @@ function esc(string $s): string
       <h2 class="section-title">Controls</h2>
       <div class="controls-row">
 
+        <!-- Vacation / pause (all weeks) -->
+        <div class="card pause-card">
+          <p class="card-title">Pause orders (vacation)</p>
+          <?php if ($isPaused): ?>
+            <p class="pause-active">
+              <strong style="color:#E52521;">Paused</strong> until
+              <?= esc((new DateTimeImmutable($pausedUntil))->format('l, M j')) ?>.
+              <?= $pauseMsg ? '<br>Message: “' . esc($pauseMsg) . '”' : '' ?>
+            </p>
+            <form method="POST" action="<?= esc(adminUrl('actions/pause.php')) ?>">
+              <input type="hidden" name="csrf_token" value="<?= CSRF_TOKEN ?>">
+              <input type="hidden" name="window_id" value="<?= esc($windowId) ?>">
+              <input type="hidden" name="action" value="resume">
+              <button type="submit" class="btn-force btn-force--closed">&#9654; Resume now</button>
+            </form>
+          <?php else: ?>
+            <form method="POST" action="<?= esc(adminUrl('actions/pause.php')) ?>">
+              <input type="hidden" name="csrf_token" value="<?= CSRF_TOKEN ?>">
+              <input type="hidden" name="window_id" value="<?= esc($windowId) ?>">
+              <input type="hidden" name="action" value="pause">
+              <div class="cap-fields">
+                <div class="field-group">
+                  <label for="paused-until">Closed until</label>
+                  <input class="num-input" type="date" id="paused-until" name="paused_until" required
+                         min="<?= esc($now->modify('+1 day')->format('Y-m-d')) ?>"
+                         max="<?= esc($now->modify('+1 year')->format('Y-m-d')) ?>">
+                </div>
+              </div>
+              <div class="field-group" style="margin-top:12px;">
+                <label for="pause-message">Message for customers (optional)</label>
+                <textarea class="num-input" id="pause-message" name="pause_message" maxlength="280"
+                          placeholder="We’re on vacation! Orders reopen Sunday, Nov 1."></textarea>
+              </div>
+              <button type="submit" class="btn-save" style="margin-top:12px;">Pause orders</button>
+            </form>
+          <?php endif; ?>
+        </div>
+
         <!-- Force-close toggle -->
         <div class="card force-close-card">
-          <p class="card-title">Form status</p>
-          <form method="POST" action="/admin/actions/force-close.php">
+          <p class="card-title">This week’s form</p>
+          <form method="POST" action="<?= esc(adminUrl('actions/force-close.php')) ?>">
             <input type="hidden" name="csrf_token" value="<?= CSRF_TOKEN ?>">
+            <input type="hidden" name="window_id" value="<?= esc($windowId) ?>">
             <?php if ((int)$cap['force_closed'] === 1): ?>
               <button type="submit" class="btn-force btn-force--closed">
                 &#9654; Re-open form
@@ -482,12 +591,13 @@ function esc(string $s): string
 
         <!-- Cap override -->
         <div class="card cap-override-card">
-          <p class="card-title">Cap override</p>
-          <form method="POST" action="/admin/actions/cap-override.php">
+          <p class="card-title">Weekly sell-out limits</p>
+          <form method="POST" action="<?= esc(adminUrl('actions/cap-override.php')) ?>">
             <input type="hidden" name="csrf_token" value="<?= CSRF_TOKEN ?>">
+            <input type="hidden" name="window_id" value="<?= esc($windowId) ?>">
             <div class="cap-fields">
               <div class="field-group">
-                <label for="rolls-max">Max rolls</label>
+                <label for="rolls-max">Max items</label>
                 <input class="num-input" type="number" id="rolls-max" name="rolls_max"
                        min="1" max="500"
                        value="<?= (int)$cap['rolls_max'] ?>">
@@ -498,7 +608,7 @@ function esc(string $s): string
                        min="1" max="200"
                        value="<?= (int)$cap['orders_max'] ?>">
               </div>
-              <button type="submit" class="btn-save">Save caps</button>
+              <button type="submit" class="btn-save">Save limits</button>
             </div>
           </form>
         </div>
@@ -517,18 +627,19 @@ function esc(string $s): string
         </h2>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
           <form class="search-form" method="GET" action="">
+            <input type="hidden" name="window" value="<?= esc($windowId) ?>">
             <input class="search-input" type="search" name="q"
                    placeholder="Search name or email&hellip;"
                    value="<?= esc($search) ?>">
             <button class="btn-search" type="submit">Search</button>
             <?php if ($search !== ''): ?>
-              <a href="/admin/dashboard.php"
+              <a href="<?= esc(adminUrl('dashboard.php') . '?window=' . $windowId) ?>"
                  style="font-size:13px;color:#7A5C44;text-decoration:none;">
                 Clear
               </a>
             <?php endif; ?>
           </form>
-          <a class="btn-export" href="/admin/actions/export-csv.php">
+          <a class="btn-export" href="<?= esc(adminUrl('actions/export-csv.php') . '?window=' . $windowId) ?>">
             ↓ Export CSV
           </a>
         </div>
@@ -542,7 +653,7 @@ function esc(string $s): string
               <th data-col="1">Name</th>
               <th data-col="2">Email</th>
               <th data-col="3">Phone</th>
-              <th data-col="4">Variety</th>
+              <th data-col="4">Items</th>
               <th data-col="5">Qty</th>
               <th data-col="6">Total</th>
               <th data-col="7">Pickup</th>
@@ -572,7 +683,12 @@ function esc(string $s): string
                   <td class="wrap"><?= esc($o['product_variant'] ?? '—') ?></td>
                   <td style="text-align:center;font-weight:700;"><?= (int)$o['quantity'] ?></td>
                   <td style="font-weight:600;"><?= money((int)$o['amount_cents']) ?></td>
-                  <td><?= esc($o['pickup_date'] ?? '—') ?></td>
+                  <td class="wrap">
+                    <?= esc(pickupLabel($o)) ?>
+                    <?php if ($o['pickup_location']): ?>
+                      <br><small style="color:#7A5C44;"><?= esc($o['pickup_location']) ?></small>
+                    <?php endif; ?>
+                  </td>
                   <td><?= statusBadge($o['payment_status']) ?></td>
                   <td style="color:#7A5C44;font-size:13px;"><?= esc($o['created_at']) ?></td>
                 </tr>
