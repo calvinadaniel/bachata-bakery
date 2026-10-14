@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Preorder (Demo) — Bachata Bakery</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="../assets/bb-favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="../assets/bb-favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <nav class="nav" id="site-nav" aria-label="Main">
+    <div class="nav-inner">
+      <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-mobile">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="../">Home</a></li>
+        <li><a href="../products/">Products</a></li>
+        <li><a href="../faq/">FAQ</a></li>
+        <li><a href="../meet-the-baker/">Meet the Baker</a></li>
+      </ul>
+      <a href="../" class="nav-logo" aria-label="Bachata Bakery home">
+        <img src="../assets/bb-logo-240.png" srcset="../assets/bb-logo-240.png 1x, ../assets/bb-logo-480.png 2x" alt="Bachata Bakery" width="240" height="228">
+      </a>
+      <div class="nav-util">
+        <a class="nav-text" href="https://www.instagram.com/bachatabakery" target="_blank" rel="noopener">@bachatabakery</a>
+        <a href="../order/" class="btn btn-primary nav-cta">Order Now</a>
+      </div>
+    </div>
+    <div class="nav-mobile" id="nav-mobile">
+      <a href="../">Home</a>
+      <a href="../products/">Products</a>
+      <a href="../faq/">FAQ</a>
+      <a href="../meet-the-baker/">Meet the Baker</a>
+      <a href="../order/">Order Now</a>
+    </div>
+  </nav>
+
+  <main id="main">
+  <section class="page-hero">
+    <p class="label" style="color:var(--primary);margin-bottom:var(--space-3)">Weekly Presale</p>
+    <h1 class="display-md">Place Your Preorder</h1>
+    <p class="body-lg mt-4">Cinnamon rolls, tres leches, and preset sugar cookies — made fresh for weekend pickup.</p>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:860px">
+
+      <div id="sandbox-banner" class="callout no-sandbox" hidden>
+        <div class="callout-title">Demo mode — Square sandbox</div>
+        <p class="body-md">No real charges. Use test card <strong>4111 1111 1111 1111</strong>, any future expiry, CVV <strong>111</strong>, ZIP <strong>12345</strong>. Card <strong>4000 0000 0000 0002</strong> simulates a decline.</p>
+      </div>
+
+      <div id="presale-closed" style="display:none;margin-bottom:var(--space-6)">
+        <div class="callout" style="border-left:4px solid var(--error,#c0392b)">
+          <div class="callout-title">Presale is currently closed</div>
+          <p class="body-md" id="presale-closed-copy">Weekly preorders open <strong>Sunday–Wednesday</strong> (or until sold out). Check back then to place your order!</p>
+        </div>
+      </div>
+
+      <div class="callout" id="presale-open-callout">
+        <div class="callout-title">Ordering is open</div>
+        <p class="body-md">Weekly preorders run <strong>Sunday–Wednesday</strong> (or until sold out). Pick your treats, choose a pickup time, and pay securely through Square.</p>
+      </div>
+
+      <div id="presale-form">
+        <form id="native-order-form" novalidate>
+
+          <div class="form-section">
+            <h2 class="form-section-title">Choose Your Treats</h2>
+            <div id="menu-groups" aria-busy="true">
+              <p class="body-md no-loading">Loading this week’s menu…</p>
+            </div>
+            <p class="no-field-error" id="items-error" role="alert"></p>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">Contact Information</h2>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="no_first">First Name <span class="required">*</span></label>
+                <input class="form-input" type="text" id="no_first" name="given_name" autocomplete="given-name" required maxlength="60" aria-describedby="no_first-error">
+                <p class="no-field-error" id="no_first-error"></p>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="no_last">Last Name <span class="required">*</span></label>
+                <input class="form-input" type="text" id="no_last" name="family_name" autocomplete="family-name" required maxlength="60" aria-describedby="no_last-error">
+                <p class="no-field-error" id="no_last-error"></p>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="no_email">Email <span class="required">*</span></label>
+              <input class="form-input" type="email" id="no_email" name="email" autocomplete="email" spellcheck="false" required maxlength="180" placeholder="you@example.com" aria-describedby="no_email-error">
+              <p class="no-field-error" id="no_email-error"></p>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="no_phone">Phone Number <span class="required">*</span></label>
+              <input class="form-input" type="tel" id="no_phone" name="phone" autocomplete="tel" inputmode="tel" required placeholder="(000) 000-0000" aria-describedby="no_phone-error">
+              <p class="no-field-error" id="no_phone-error"></p>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">Pickup</h2>
+            <fieldset class="form-group no-fieldset" aria-describedby="pickup-error">
+              <legend class="form-label">Pickup Location <span class="required">*</span></legend>
+              <div class="radio-card-group" id="pickup-options"></div>
+              <p class="no-field-error" id="pickup-error"></p>
+            </fieldset>
+            <div class="form-group">
+              <label class="form-label" for="no_time">Pickup Time <span class="required">*</span></label>
+              <select class="form-input" id="no_time" required disabled aria-describedby="no_time-error">
+                <option value="">Choose a location first</option>
+              </select>
+              <p class="no-field-error" id="no_time-error"></p>
+            </div>
+            <p class="form-hint" style="margin-top:0">Exact pickup address is confirmed by email no later than Wednesday.</p>
+          </div>
+
+          <div class="form-section">
+            <h2 class="form-section-title">Review &amp; Pay</h2>
+
+            <div class="no-summary" id="order-summary">
+              <ul class="no-summary-lines" id="summary-lines">
+                <li class="no-summary-empty">No items yet.</li>
+              </ul>
+              <div class="no-summary-total">
+                <span>Total</span>
+                <span id="summary-total">$0.00</span>
+              </div>
+            </div>
+
+            <div id="wallets" class="no-wallets" hidden>
+              <div id="apple-pay-button" class="no-apple-pay" hidden role="button" tabindex="0" aria-label="Pay with Apple Pay"></div>
+              <div id="google-pay-button" hidden></div>
+              <div id="cash-app-pay" hidden></div>
+              <p class="no-divider"><span>or pay with card</span></p>
+            </div>
+
+            <div id="card-container" class="no-card">
+              <p class="body-md no-loading">Loading secure payment form…</p>
+            </div>
+
+            <button type="submit" id="pay-btn" class="btn btn-primary no-pay-btn" disabled>
+              Pay $0.00
+            </button>
+            <p id="form-status" class="no-status" role="status" aria-live="polite"></p>
+            <p class="form-hint no-secure-note">Payments are processed securely by Square. Card details never touch our servers.</p>
+          </div>
+        </form>
+      </div>
+
+      <div id="order-confirmation" class="no-confirmation" hidden tabindex="-1">
+        <p class="label" style="color:var(--primary)">Order Confirmed</p>
+        <h2 class="display-sm">¡Gracias, <span id="confirm-name"></span>!</h2>
+        <p class="body-lg">Your order <strong id="confirm-ref"></strong> is paid. A receipt is on its way to <strong id="confirm-email"></strong>.</p>
+        <div class="no-summary">
+          <ul class="no-summary-lines" id="confirm-lines"></ul>
+          <div class="no-summary-total"><span>Total paid</span><span id="confirm-total"></span></div>
+        </div>
+        <p class="body-md"><strong>Pickup:</strong> <span id="confirm-pickup"></span></p>
+        <p class="body-md"><a id="confirm-receipt" href="#" target="_blank" rel="noopener">View your Square receipt →</a></p>
+      </div>
+
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <div class="frieze frieze--light" aria-hidden="true"></div>
+    <div class="container footer-inner">
+      <div class="footer-cols">
+        <div>
+          <h2>Bachata Bakery</h2>
+          <ul>
+            <li><a href="../products/">Products &amp; Pricing</a></li>
+            <li><a href="../faq/">FAQ</a></li>
+            <li><a href="../meet-the-baker/">Meet the Baker</a></li>
+            <li><a href="../order/">Order Now</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Pickup</h2>
+          <p>Middletown, DE<br><span class="muted">Sunday · 1 – 4 PM</span></p>
+          <p style="margin-top: 10px">Artisan Exchange, West Chester, PA<br><span class="muted">Saturday · 10 AM – 1 PM</span></p>
+        </div>
+        <div>
+          <h2>Contact</h2>
+          <p><a href="mailto:info@bachatabakery.com">info@bachatabakery.com</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Bachata Bakery. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../script.js"></script>
+  <script src="../assets/js/preorder-window.js"></script>
+  <script src="../assets/js/order-native.js"></script>
+</body>
+</html>
