@@ -75,6 +75,7 @@
 
           <div class="form-section">
             <h2 class="form-section-title">Choose Your Treats</h2>
+            <p class="no-stock-note" id="stock-note" role="status" hidden></p>
             <div id="menu-groups" aria-busy="true">
               <p class="body-md no-loading">Loading this week’s menu…</p>
             </div>
@@ -135,6 +136,12 @@
                 <span>Total</span>
                 <span id="summary-total">$0.00</span>
               </div>
+            </div>
+
+            <div id="captcha-wrap" class="no-captcha" tabindex="-1" hidden>
+              <p class="form-label">Quick check before you pay <span class="required">*</span></p>
+              <div id="captcha-container"></div>
+              <p class="no-field-error" id="captcha-error" role="alert"></p>
             </div>
 
             <div id="wallets" class="no-wallets" hidden>

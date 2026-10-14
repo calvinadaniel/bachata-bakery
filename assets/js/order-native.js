@@ -2,12 +2,13 @@
  * Bachata Bakery — native weekly preorder form (Square Web Payments SDK)
  *
  * Talks to cinnamon-roll-order-form/api:
- *   GET  menu.php      items, prices, pickup options
- *   GET  config.php    public Square app id / location id / env
- *   POST checkout.php  token + order → Square order + payment
+ *   GET  menu.php      items, prices, pickup options, open state, items left this week
+ *   GET  config.php    public Square app id / location id / env / hCaptcha site key
+ *   POST checkout.php  token + captcha + order → Square order + payment
  *
  * Card, Apple Pay, Google Pay and Cash App Pay all produce a one-time token
- * that is sent to checkout.php; the server recomputes the total.
+ * that is sent to checkout.php; the server recomputes the total. The hCaptcha
+ * check must be completed before any payment method is used.
  *
  * Optional override before this script:
  *   window.BACHATA_API_BASE = 'https://bachatabakery.com/cinnamon-roll-order-form';
@@ -17,6 +18,7 @@
 
   var PHONE_DIGITS = /^1?\d{10}$/;
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var LOW_STOCK = 15;
 
   var state = {
     menu: null,
@@ -26,6 +28,7 @@
     card: null,
     walletsReady: false,
     submitting: false,
+    captcha: { siteKey: '', widgetId: null, token: null },
   };
 
   function $(id) {
@@ -113,21 +116,59 @@
       var id = btn.closest('.no-item').getAttribute('data-item');
       setQty(id, state.qty[id] + Number(btn.getAttribute('data-step')));
     });
+
+    renderSteppers();
+  }
+
+  function itemsInCart(exceptId) {
+    return Object.keys(state.qty).reduce(function (sum, id) {
+      return id === exceptId ? sum : sum + state.qty[id];
+    }, 0);
+  }
+
+  /** Items still available this week across all products (sell-out limit). */
+  function itemsRemaining() {
+    var left = state.menu.items_remaining;
+    return typeof left === 'number' ? left : Infinity;
   }
 
   function setQty(id, value) {
-    var max = state.menu.max_qty_per_item;
-    var qty = Math.max(0, Math.min(max, value));
-    state.qty[id] = qty;
-
-    var row = document.querySelector('.no-item[data-item="' + id + '"]');
-    row.querySelector('.no-qty').textContent = String(qty);
-    row.querySelector('[data-step="-1"]').disabled = qty === 0;
-    row.querySelector('[data-step="1"]').disabled = qty === max;
-    row.classList.toggle('is-selected', qty > 0);
-
+    var max = Math.min(state.menu.max_qty_per_item, itemsRemaining() - itemsInCart(id));
+    state.qty[id] = Math.max(0, Math.min(max, value));
     $('items-error').textContent = '';
+    renderSteppers();
     renderSummary();
+  }
+
+  /** Drops quantities (last items first) until the cart fits what's left. */
+  function clampCart() {
+    var over = itemsInCart() - itemsRemaining();
+    for (var i = state.menu.items.length - 1; i >= 0 && over > 0; i--) {
+      var id = state.menu.items[i].id;
+      var take = Math.min(state.qty[id], over);
+      state.qty[id] -= take;
+      over -= take;
+    }
+  }
+
+  function renderSteppers() {
+    var full = itemsInCart() >= itemsRemaining();
+    state.menu.items.forEach(function (item) {
+      var qty = state.qty[item.id];
+      var row = document.querySelector('.no-item[data-item="' + item.id + '"]');
+      row.querySelector('.no-qty').textContent = String(qty);
+      row.querySelector('[data-step="-1"]').disabled = qty === 0;
+      row.querySelector('[data-step="1"]').disabled = full || qty >= state.menu.max_qty_per_item;
+      row.classList.toggle('is-selected', qty > 0);
+    });
+
+    var note = $('stock-note');
+    var left = itemsRemaining();
+    note.hidden = left > LOW_STOCK;
+    if (!note.hidden) {
+      note.textContent = 'Only ' + left + (left === 1 ? ' treat' : ' treats') + ' left this week!' +
+        (full && left > 0 ? ' Your order has the last of them.' : '');
+    }
   }
 
   function orderLines() {
@@ -257,7 +298,58 @@
     if (selectedPickup() && !time.value) fail(time, 'no_time-error', 'Please choose a pickup time.');
     else clearError(time, 'no_time-error');
 
+    if (state.captcha.siteKey && !state.captcha.token) {
+      fail(null, 'captcha-error', 'Please complete the “I am human” check.', $('captcha-wrap'));
+    }
+
     return first;
+  }
+
+  /* ---------- hCaptcha (card-testing protection) ---------- */
+
+  function loadCaptcha(siteKey) {
+    state.captcha.siteKey = siteKey;
+    $('captcha-wrap').hidden = false;
+
+    window.bbCaptchaReady = function () {
+      state.captcha.widgetId = window.hcaptcha.render('captcha-container', {
+        sitekey: siteKey,
+        callback: function (token) {
+          state.captcha.token = token;
+          clearError(null, 'captcha-error');
+        },
+        'expired-callback': function () { state.captcha.token = null; },
+        'error-callback': function () { state.captcha.token = null; },
+      });
+    };
+
+    var s = document.createElement('script');
+    s.src = 'https://js.hcaptcha.com/1/api.js?render=explicit&onload=bbCaptchaReady&recaptchacompat=off';
+    s.async = true;
+    s.onerror = function () {
+      setError(null, 'captcha-error', 'The “I am human” check couldn’t load. Please disable ad blockers for this page and refresh.');
+    };
+    document.head.appendChild(s);
+  }
+
+  /** Tokens are single-use: get a fresh one after every checkout attempt. */
+  function resetCaptcha() {
+    state.captcha.token = null;
+    if (window.hcaptcha && state.captcha.widgetId !== null) window.hcaptcha.reset(state.captcha.widgetId);
+  }
+
+  /* ---------- Availability (sell-out limit / closed) ---------- */
+
+  async function refreshAvailability() {
+    try {
+      var menu = await getJson('/api/menu.php');
+      state.menu.open = menu.open;
+      state.menu.items_remaining = menu.items_remaining;
+      clampCart();
+      renderSteppers();
+      renderSummary();
+      if (!menu.open && window.BachataPreorder) window.BachataPreorder.fetchStatus();
+    } catch (err) { /* keep the current view */ }
   }
 
   /* ---------- Square ---------- */
@@ -397,12 +489,14 @@
     }
 
     setSubmitting(true);
+    var sent = false;
     try {
       var token = await getToken();
       if (!token) return;
 
       showStatus('Placing your order…');
       var pickup = selectedPickup();
+      sent = true;
       var res = await fetch(apiBase() + '/api/checkout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -418,19 +512,23 @@
           pickup: { location: pickup.id, time: $('no_time').value },
           items: orderLines().map(function (l) { return { id: l.id, qty: l.qty }; }),
           amount_cents: totalCents(),
+          captcha_token: state.captcha.token,
         }),
       });
       var data = await res.json().catch(function () { return {}; });
 
       if (data.success) {
         showConfirmation(data);
-      } else {
-        showStatus(data.message || 'Something went wrong. You have not been charged.', true);
+        return;
       }
+      showStatus(data.message || 'Something went wrong. You have not been charged.', true);
+      if (data.error_code === 'sold_out' || data.error_code === 'form_closed') refreshAvailability();
+      if (data.error_code === 'captcha_failed') $('captcha-wrap').focus();
     } catch (err) {
       showStatus('We couldn’t reach the payment server. You have not been charged — please try again.', true);
     } finally {
       setSubmitting(false);
+      if (sent && $('order-confirmation').hidden) resetCaptcha();
     }
   }
 
@@ -495,6 +593,14 @@
     renderSummary();
 
     if (config.app_env !== 'production') $('sandbox-banner').hidden = false;
+
+    if (!menu.open) {
+      // status.php (preorder-window.js) shows the closed / paused / sold-out message.
+      if (window.BachataPreorder) window.BachataPreorder.fetchStatus();
+      return;
+    }
+
+    if (config.hcaptcha_site_key) loadCaptcha(config.hcaptcha_site_key);
 
     try {
       await initSquare(config);

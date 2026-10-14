@@ -21,6 +21,12 @@
   var TZ = 'America/New_York';
   var CLOSE_COPY = 'Orders close Wednesday at 11:59 PM';
 
+  /** "Sunday, November 1" in bakery time. Vacation dates come from the admin pause switch via status.php. */
+  function reopenLabel(date) {
+    if (!date) return 'soon';
+    return new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'long', month: 'long', day: 'numeric' }).format(date);
+  }
+
   function apiBase() {
     if (typeof window.BACHATA_API_BASE === 'string' && window.BACHATA_API_BASE) {
       return window.BACHATA_API_BASE.replace(/\/$/, '');
@@ -128,6 +134,7 @@
     closesAt: null,
     reopensAt: null,
     closedReason: null,
+    message: null,
     source: 'pending',
   };
   var countdownTimer = null;
@@ -138,6 +145,7 @@
 
   function applyStatus(data) {
     state.open = !!data.open;
+    state.message = data.message || null;
     state.closesAt = data.closes_at ? new Date(data.closes_at) : null;
     state.reopensAt = data.reopens_at
       ? new Date(data.reopens_at)
@@ -195,7 +203,21 @@
     var closedMsg = $('presale-closed');
     var jumpBtn = $('jump-btn-wrap');
     var openCallout = $('presale-open-callout');
+    var closedCopy = $('presale-closed-copy');
     if (!formSection && !closedMsg && !jumpBtn) return;
+
+    if (closedCopy && state.closedReason === 'vacation') {
+      var strong = document.createElement('strong');
+      strong.textContent = reopenLabel(state.reopensAt);
+      closedCopy.textContent = (state.message || 'We\u2019re on vacation!') + ' The preorder window reopens ';
+      closedCopy.append(strong, ' (Sunday\u2013Wednesday weekly window, or until sold out).');
+    } else if (closedCopy && (state.closedReason === 'sold_out' || state.closedReason === 'force_closed')) {
+      closedCopy.innerHTML =
+        'We\u2019re <strong>sold out</strong> for this week \u2014 thank you! Weekly preorders reopen <strong>Sunday</strong>.';
+    } else if (closedCopy) {
+      closedCopy.innerHTML =
+        'Weekly preorders open <strong>Sunday\u2013Wednesday</strong> (or until sold out). Check back then to place your order \u2014 we can\u2019t wait to make something delicious for you!';
+    }
 
     if (state.open) {
       if (formSection) formSection.style.display = '';
@@ -244,15 +266,24 @@
       cta.classList.add('is-open');
       cta.classList.remove('is-closed');
     } else {
+      var vacation = state.closedReason === 'vacation';
       var soldOut =
         state.closedReason === 'sold_out' || state.closedReason === 'force_closed';
       if (days) days.textContent = 'Closed';
       if (windowSub) {
-        windowSub.textContent = soldOut ? 'Sold out this week' : 'Reopens Sunday';
+        windowSub.textContent = vacation
+          ? 'Reopens ' + reopenLabel(state.reopensAt)
+          : soldOut
+            ? 'Sold out this week'
+            : 'Reopens Sunday';
       }
       if (headline) {
         headline.hidden = false;
-        headline.textContent = soldOut ? 'Sold Out This Week' : 'Orders reopen Sunday';
+        headline.textContent = vacation
+          ? 'Preorder window reopens ' + reopenLabel(state.reopensAt)
+          : soldOut
+            ? 'Sold Out This Week'
+            : 'Orders reopen Sunday';
       }
       if (countdown) countdown.hidden = false;
       orderBtn.hidden = true;
