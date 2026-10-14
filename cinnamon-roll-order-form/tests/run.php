@@ -78,5 +78,86 @@ $menu = menuPayload(at('2026-10-14 12:00'));
 check('menu payload keys', array_keys($menu) === ['open', 'max_qty_per_item', 'items', 'pickup']);
 
 // ---------------------------------------------------------------
+echo "checkout validation\n";
+// ---------------------------------------------------------------
+require_once dirname(__DIR__) . '/api/helpers/checkout_lib.php';
+
+$now = at('2026-10-14 12:00');
+
+function validBody(array $override = []): array
+{
+    return array_replace([
+        'token'           => 'cnon:card-nonce-ok',
+        'idempotency_key' => '3f2b8c1e-4a5d-4e6f-9a7b-1c2d3e4f5a6b',
+        'contact'         => ['first' => 'Ana', 'last' => 'Diaz', 'email' => 'Ana@Example.com', 'phone' => '(302) 555-0100'],
+        'pickup'          => ['location' => 'westchester', 'time' => '10:30'],
+        'items'           => [['id' => 'roll-clasico', 'qty' => 2], ['id' => 'tl-guava', 'qty' => 1]],
+        'amount_cents'    => 2400,
+    ], $override);
+}
+
+function errorsFor(array $override, DateTimeImmutable $now): array
+{
+    return validateCheckout(validBody($override), $now)['errors'];
+}
+
+$ok = validateCheckout(validBody(), $now);
+check('valid body has no errors', $ok['errors'] === [], implode(' | ', $ok['errors']));
+check('total is 2400', ($ok['order']['total_cents'] ?? null) === 2400);
+check('email lowercased', ($ok['order']['contact']['email'] ?? '') === 'ana@example.com');
+check('two lines', count($ok['order']['lines'] ?? []) === 2);
+check('line name from catalog', ($ok['order']['lines'][0]['name'] ?? '') === 'El Clásico');
+check(
+    'pickup_at is RFC 3339 in bakery tz',
+    ($ok['order']['pickup']['pickup_at'] ?? '') === '2026-10-17T10:30:00-04:00',
+    $ok['order']['pickup']['pickup_at'] ?? ''
+);
+
+check('non-array body rejected', validateCheckout('nope', $now)['errors'] !== []);
+check('wrong amount rejected', errorsFor(['amount_cents' => 1600], $now) !== []);
+check('string amount rejected', errorsFor(['amount_cents' => '2400'], $now) !== []);
+check('missing token rejected', errorsFor(['token' => ''], $now) !== []);
+check('bad idempotency key rejected', errorsFor(['idempotency_key' => 'abc'], $now) !== []);
+check('unknown item rejected', errorsFor(['items' => [['id' => 'roll-fake', 'qty' => 1]], 'amount_cents' => 800], $now) !== []);
+check('qty 0 rejected', errorsFor(['items' => [['id' => 'roll-clasico', 'qty' => 0]], 'amount_cents' => 0], $now) !== []);
+check('qty 11 rejected', errorsFor(['items' => [['id' => 'roll-clasico', 'qty' => 11]], 'amount_cents' => 8800], $now) !== []);
+check('string qty rejected', errorsFor(['items' => [['id' => 'roll-clasico', 'qty' => '2']], 'amount_cents' => 1600], $now) !== []);
+check('empty items rejected', errorsFor(['items' => [], 'amount_cents' => 0], $now) !== []);
+check(
+    'duplicate item rejected',
+    errorsFor(['items' => [['id' => 'roll-clasico', 'qty' => 1], ['id' => 'roll-clasico', 'qty' => 1]], 'amount_cents' => 1600], $now) !== []
+);
+check('unknown location rejected', errorsFor(['pickup' => ['location' => 'dover', 'time' => '10:30']], $now) !== []);
+check('slot outside hours rejected', errorsFor(['pickup' => ['location' => 'middletown', 'time' => '10:30']], $now) !== []);
+check('bad email rejected', errorsFor(['contact' => ['first' => 'A', 'last' => 'D', 'email' => 'nope', 'phone' => '3025550100']], $now) !== []);
+check('bad phone rejected', errorsFor(['contact' => ['first' => 'A', 'last' => 'D', 'email' => 'a@b.co', 'phone' => 'call me']], $now) !== []);
+check('missing first name rejected', errorsFor(['contact' => ['first' => ' ', 'last' => 'D', 'email' => 'a@b.co', 'phone' => '3025550100']], $now) !== []);
+
+// ---------------------------------------------------------------
+echo "square request bodies\n";
+// ---------------------------------------------------------------
+$order = $ok['order'];
+$ref   = makeReferenceId($now);
+check('reference id format', preg_match('/^BB-20261014-[0-9A-F]{4}$/', $ref) === 1, $ref);
+
+$orderBody = buildOrderBody($order, 'LOC123', $ref);
+$o = $orderBody['order'];
+check('order idempotency key', $orderBody['idempotency_key'] === $order['key'] . '-order');
+check('order location', $o['location_id'] === 'LOC123');
+check('order reference', $o['reference_id'] === $ref);
+check('line quantity is a string', $o['line_items'][0]['quantity'] === '2');
+check('line price from catalog', $o['line_items'][0]['base_price_money'] === ['amount' => 800, 'currency' => 'USD']);
+check('pickup fulfillment', $o['fulfillments'][0]['type'] === 'PICKUP');
+check('pickup_at on fulfillment', $o['fulfillments'][0]['pickup_details']['pickup_at'] === '2026-10-17T10:30:00-04:00');
+check('recipient email', $o['fulfillments'][0]['pickup_details']['recipient']['email_address'] === 'ana@example.com');
+
+$payBody = buildPaymentBody($order, 'LOC123', $ref, 'SQ_ORDER_1');
+check('payment idempotency key', $payBody['idempotency_key'] === $order['key'] . '-pay');
+check('payment source', $payBody['source_id'] === 'cnon:card-nonce-ok');
+check('payment amount', $payBody['amount_money'] === ['amount' => 2400, 'currency' => 'USD']);
+check('payment order id', $payBody['order_id'] === 'SQ_ORDER_1');
+check('payment note ≤ 500', strlen($payBody['note']) <= 500 && str_contains($payBody['note'], 'West Chester'));
+
+// ---------------------------------------------------------------
 echo "\n{$passes} passed, {$failures} failed\n";
 exit($failures === 0 ? 0 : 1);
