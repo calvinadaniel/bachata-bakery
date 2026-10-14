@@ -1,25 +1,31 @@
 # =============================================================
-# Bachata Bakery — Root .htaccess
+# Bachata Bakery — order backend .htaccess (/cinnamon-roll-order-form/)
 # Protects secrets and internal paths from direct browser access.
+# Only api/*.php, api/webhook/square.php and admin/ are meant to be public.
 # =============================================================
 
-# --- Block .env files ---
-<Files ".env">
+# --- Block env files, schema, docs, and other non-public files ---
+<FilesMatch "(^\.env|\.(example|sql|md|log|bak|ini|json|lock)$)">
     Require all denied
-</Files>
+</FilesMatch>
 
-# --- Block api/helpers/ from direct HTTP access ---
-# (api/helpers/ has its own .htaccess, but this is belt-and-suspenders)
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Block direct access to helpers
-    RewriteRule ^api/helpers/ - [F,L]
+    # Force HTTPS (Square webhooks and the admin session cookie require it).
+    # The X-Forwarded-Proto check avoids a loop when the CDN terminates TLS.
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # Force HTTPS — UNCOMMENT the two lines below before going live on Hostinger.
-    # Leave commented during local development to avoid redirect loops.
-    # RewriteCond %{HTTPS} off
-    # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Internal code and files — never served directly
+    RewriteRule ^(api/helpers|tests|setup|storage|emails|docs|\.claude)(/|$) - [F,L]
+
+    # Retired endpoint from the old $6-roll form; checkout.php replaced it
+    RewriteRule ^api/order\.php$ - [G,L]
+
+    # Old Jotform-era static form (the order page lives at /order/)
+    RewriteRule ^(index\.html$|assets/) - [F,L]
 </IfModule>
 
 # --- Security headers ---
@@ -27,7 +33,6 @@
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "DENY"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set X-XSS-Protection "1; mode=block"
 </IfModule>
 
 # --- PHP settings (Hostinger shared) ---
@@ -35,3 +40,5 @@
     php_flag display_errors Off
     php_flag log_errors On
 </IfModule>
+
+Options -Indexes
