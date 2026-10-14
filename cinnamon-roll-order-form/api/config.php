@@ -3,7 +3,7 @@
  * api/config.php
  *
  * GET — Returns public Square credentials for the frontend SDK.
- * Only APP_ID, LOCATION_ID, and APP_ENV are exposed.
+ * Only APP_ID, LOCATION_ID, APP_ENV, and the public hCaptcha site key are exposed.
  * SQUARE_ACCESS_TOKEN and SQUARE_WEBHOOK_SIG_KEY never leave the server.
  */
 
@@ -34,6 +34,7 @@ try {
         'square_app_id'      => $appId,
         'square_location_id' => $locationId,
         'app_env'            => $appEnv,
+        'hcaptcha_site_key'  => $_ENV['HCAPTCHA_SITE_KEY'] ?? '',
     ]);
 
 } catch (Throwable $e) {

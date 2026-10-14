@@ -159,5 +159,104 @@ check('payment order id', $payBody['order_id'] === 'SQ_ORDER_1');
 check('payment note ≤ 500', strlen($payBody['note']) <= 500 && str_contains($payBody['note'], 'West Chester'));
 
 // ---------------------------------------------------------------
+echo "order window id\n";
+// ---------------------------------------------------------------
+check('Sun 10/11 → window 10/14', orderWeekWednesday(at('2026-10-11 09:00'))->format('Y-m-d') === '2026-10-14');
+check('Mon 10/12 → window 10/14', orderWeekWednesday(at('2026-10-12 09:00'))->format('Y-m-d') === '2026-10-14');
+check('Thu 10/15 → window 10/21', orderWeekWednesday(at('2026-10-15 09:00'))->format('Y-m-d') === '2026-10-21');
+
+// ---------------------------------------------------------------
+echo "store status\n";
+// ---------------------------------------------------------------
+require_once dirname(__DIR__) . '/api/helpers/store.php';
+
+function cap(array $o = []): array
+{
+    return array_replace(
+        ['rolls_sold' => 0, 'orders_placed' => 0, 'rolls_max' => 100, 'orders_max' => 50, 'force_closed' => 0],
+        $o
+    );
+}
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(), null, null);
+check('open midweek', $s['open'] === true && $s['closed_reason'] === null);
+check('window id', $s['window_id'] === '2026-10-14');
+check('items remaining', $s['items_remaining'] === 100 && $s['orders_remaining'] === 50);
+check('closes Wed 23:59:59', $s['closes_at'] === '2026-10-14T23:59:59-04:00', $s['closes_at']);
+
+$s = computeStoreStatus(at('2026-10-15 09:00'), cap(), null, null);
+check('Thu closed by time gate', $s['open'] === false && $s['closed_reason'] === 'time_gate');
+check('Thu reopens Sun', $s['reopens_at'] === '2026-10-18T00:00:00-04:00', (string) $s['reopens_at']);
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(), '2026-10-20', 'Back soon!');
+check('pause → vacation', $s['open'] === false && $s['closed_reason'] === 'vacation');
+check('pause reopens on open day', $s['reopens_at'] === '2026-10-20T00:00:00-04:00', (string) $s['reopens_at']);
+check('pause message', $s['message'] === 'Back soon!');
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(), '2026-10-16', null);
+check('pause ending Fri reopens Sun', $s['reopens_at'] === '2026-10-18T00:00:00-04:00', (string) $s['reopens_at']);
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(), '2026-10-14', null);
+check('pause ending today is over', $s['open'] === true);
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(['force_closed' => 1]), null, null);
+check('force closed', $s['open'] === false && $s['closed_reason'] === 'force_closed');
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(['rolls_sold' => 100]), null, null);
+check('items sold out', $s['closed_reason'] === 'sold_out' && $s['items_remaining'] === 0);
+
+$s = computeStoreStatus(at('2026-10-14 12:00'), cap(['orders_placed' => 50]), null, null);
+check('orders sold out', $s['closed_reason'] === 'sold_out');
+
+$s = computeStoreStatus(at('2026-10-15 09:00'), cap(['force_closed' => 1]), '2026-10-20', null);
+check('vacation beats time gate and force close', $s['closed_reason'] === 'vacation');
+
+// ---------------------------------------------------------------
+echo "rate limit\n";
+// ---------------------------------------------------------------
+check('under limits', rateLimitVerdict(7, 2, 8, 3) === null);
+check('too many attempts', rateLimitVerdict(8, 0, 8, 3) !== null);
+check('too many declines', rateLimitVerdict(1, 3, 8, 3) !== null);
+
+// ---------------------------------------------------------------
+echo "webhook routing\n";
+// ---------------------------------------------------------------
+require_once dirname(__DIR__) . '/api/helpers/webhook_lib.php';
+
+function evt(string $type, string $status): array
+{
+    return ['type' => $type, 'data' => ['object' => ['payment' => ['id' => 'p1', 'status' => $status]]]];
+}
+
+check('updated COMPLETED → completed', routeSquareEvent(evt('payment.updated', 'COMPLETED')) === 'completed');
+check('created COMPLETED → completed', routeSquareEvent(evt('payment.created', 'COMPLETED')) === 'completed');
+check('updated FAILED → failed', routeSquareEvent(evt('payment.updated', 'FAILED')) === 'failed');
+check('updated CANCELED → failed', routeSquareEvent(evt('payment.updated', 'CANCELED')) === 'failed');
+check('APPROVED ignored', routeSquareEvent(evt('payment.updated', 'APPROVED')) === null);
+check('other event ignored', routeSquareEvent(evt('refund.updated', 'COMPLETED')) === null);
+
+// ---------------------------------------------------------------
+echo "admin window\n";
+// ---------------------------------------------------------------
+require_once dirname(__DIR__) . '/admin/window.php';
+
+$expect = [
+    '2026-10-11' => '2026-10-07', // Sun: last week's Middletown pickups win over new orders
+    '2026-10-12' => '2026-10-14', // Mon: taking orders → this week
+    '2026-10-14' => '2026-10-14', // Wed: last order day
+    '2026-10-15' => '2026-10-14', // Thu: closed, pickups this weekend
+    '2026-10-17' => '2026-10-14', // Sat: West Chester pickup day
+    '2026-10-18' => '2026-10-14', // Sun: Middletown pickup day
+    '2026-10-19' => '2026-10-21', // Mon: next week
+];
+foreach ($expect as $day => $win) {
+    $got = defaultAdminWindow(new DateTimeImmutable($day . ' 09:00', new DateTimeZone('America/New_York')));
+    check("default window on {$day} → {$win}", $got === $win, $got);
+}
+check('isWindowId accepts a Wednesday', isWindowId('2026-10-14'));
+check('isWindowId rejects a Friday', !isWindowId('2026-10-16'));
+check('isWindowId rejects junk', !isWindowId('2026-13-45') && !isWindowId("2026-10-14' OR 1"));
+
+// ---------------------------------------------------------------
 echo "\n{$passes} passed, {$failures} failed\n";
 exit($failures === 0 ? 0 : 1);

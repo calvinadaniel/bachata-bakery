@@ -2,8 +2,8 @@
 /**
  * api/menu.php
  *
- * GET — Weekly preorder menu, prices, and pickup options for the native
- * order form. Public data only.
+ * GET — Weekly preorder menu, prices, pickup options, and store status
+ * (open / closed reason / items remaining) for the native order form.
  */
 
 declare(strict_types=1);
@@ -19,10 +19,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 require_once __DIR__ . '/helpers/time_gate.php';
 require_once __DIR__ . '/helpers/catalog.php';
+require_once __DIR__ . '/helpers/store.php';
 
 try {
-    $now = new DateTimeImmutable('now', _bakeryTz());
-    echo json_encode(menuPayload($now), JSON_UNESCAPED_UNICODE);
+    $now    = new DateTimeImmutable('now', _bakeryTz());
+    $status = storeStatus(db(), $now);
+
+    echo json_encode(array_merge(menuPayload($now), [
+        'open'            => $status['open'],
+        'closed_reason'   => $status['closed_reason'],
+        'message'         => $status['message'],
+        'reopens_at'      => $status['reopens_at'],
+        'items_remaining' => $status['items_remaining'],
+    ]), JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     error_log('[bachata-bakery] menu.php error: ' . $e->getMessage());
     http_response_code(500);

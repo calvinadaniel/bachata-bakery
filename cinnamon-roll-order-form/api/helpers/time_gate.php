@@ -10,7 +10,7 @@
  *   isFormOpen(): bool
  *   getClosesAt(): DateTimeImmutable      — Wed 23:59:59 of the active order week
  *   getNextOpenTime(): DateTimeImmutable  — next Sunday 00:00:00
- *   getCurrentWindowId(): string          — Friday date (Y-m-d) of the active window
+ *   getCurrentWindowId(): string          — Wednesday (Y-m-d) closing the active order week
  *
  * Requires db.php to have been loaded first (ensures .env is loaded).
  */
@@ -83,23 +83,12 @@ function getNextOpenTime(): DateTimeImmutable
 }
 
 /**
- * Returns the DATE string (Y-m-d) of the Friday that keys the current
- * weekly capacity window. Used as window_id in the DB.
- *
- * - Fri: today.
- * - Sat: yesterday.
- * - Sun: two days ago.
- * - Mon–Thu: the upcoming Friday (orders count toward that weekend's window).
+ * Returns the DATE string (Y-m-d) of the Wednesday that closes the current
+ * order week. Used as window_id in the DB. Thursday–Saturday belong to the
+ * next week's window.
  */
 function getCurrentWindowId(): string
 {
-    $now = new DateTimeImmutable('now', _bakeryTz());
-    $dow = (int) $now->format('N');
-
-    return match (true) {
-        $dow === 5 => $now->format('Y-m-d'),
-        $dow === 6 => $now->modify('-1 day')->format('Y-m-d'),
-        $dow === 7 => $now->modify('-2 days')->format('Y-m-d'),
-        default    => $now->modify('+' . (5 - $dow) . ' days')->format('Y-m-d'),
-    };
+    require_once __DIR__ . '/catalog.php';
+    return orderWeekWednesday(new DateTimeImmutable('now', _bakeryTz()))->format('Y-m-d');
 }
