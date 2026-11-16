@@ -1,2 +1,13 @@
 .claude/
 .playwright-mcp/
+node_modules/
+
+# Secrets and private data — never commit
+*password*.txt
+*secret*
+.env
+.env.*
+!.env.example
+finance-data-do-not-upload-filezilla/
+tmp/deploy-smoke-last.md
+tmp/deploy-smoke/
