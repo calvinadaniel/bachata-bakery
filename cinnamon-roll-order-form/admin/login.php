@@ -26,48 +26,57 @@ if (!empty($_SESSION['bb_admin_authed'])) {
 }
 
 require_once dirname(__DIR__) . '/api/helpers/db.php';
+require_once dirname(__DIR__) . '/api/helpers/store.php';
 load_env();
 
-$error      = '';
-$lockoutKey = 'login_attempts';
-$maxTries   = 3;
-$lockSecs   = 900; // 15 minutes
+// Lockout is per IP and stored in the DB, so clearing cookies doesn't reset it.
+const LOGIN_MAX_FAILS     = 5;
+const LOGIN_LOCK_MINUTES  = 15;
+const ADMIN_PASS_MIN_PROD = 16;
 
-// Check lockout
-$attempts  = $_SESSION[$lockoutKey]['count']    ?? 0;
-$lastTry   = $_SESSION[$lockoutKey]['last_time'] ?? 0;
-$lockedOut = $attempts >= $maxTries && (time() - $lastTry) < $lockSecs;
+$error  = '';
+$pdo    = db();
+$ipHash = clientIpHash();
 
-if ($lockedOut) {
-    $wait  = $lockSecs - (time() - $lastTry);
-    $mins  = (int) ceil($wait / 60);
-    $error = "Too many failed attempts. Try again in {$mins} minute(s).";
+$stmt = $pdo->prepare(
+    "SELECT COUNT(*) FROM checkout_attempts
+      WHERE ip_hash = ? AND outcome = 'admin_fail' AND created_at >= NOW() - INTERVAL " . LOGIN_LOCK_MINUTES . ' MINUTE'
+);
+$stmt->execute([$ipHash]);
+$fails     = (int) $stmt->fetchColumn();
+$lockedOut = $fails >= LOGIN_MAX_FAILS;
+
+$adminPass = $_ENV['ADMIN_PASS'] ?? '';
+$weakPass  = ($_ENV['APP_ENV'] ?? 'sandbox') === 'production'
+          && (strlen($adminPass) < ADMIN_PASS_MIN_PROD || $adminPass === 'changeme');
+
+if ($weakPass) {
+    $error = 'Admin login is disabled: set a strong ADMIN_PASS (16+ characters) in .env.';
+} elseif ($lockedOut) {
+    $error = 'Too many failed attempts. Try again in ' . LOGIN_LOCK_MINUTES . ' minutes.';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$lockedOut) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$lockedOut && !$weakPass) {
     $submitted = $_POST['password'] ?? '';
-    $adminPass = $_ENV['ADMIN_PASS'] ?? '';
 
     $valid = $adminPass !== ''
+          && is_string($submitted)
           && hash_equals($adminPass, $submitted);
 
     if ($valid) {
         session_regenerate_id(true);
-        $_SESSION['bb_admin_authed']       = true;
-        $_SESSION['csrf_token']            = bin2hex(random_bytes(32));
-        unset($_SESSION[$lockoutKey]);
+        $_SESSION['bb_admin_authed'] = true;
+        $_SESSION['csrf_token']      = bin2hex(random_bytes(32));
         header('Location: dashboard.php');
         exit;
     }
 
-    // Failed attempt
-    $_SESSION[$lockoutKey]['count']     = ($attempts < $maxTries) ? $attempts + 1 : $attempts;
-    $_SESSION[$lockoutKey]['last_time'] = time();
-    $remaining = $maxTries - $_SESSION[$lockoutKey]['count'];
+    recordAttempt($pdo, $ipHash, 'admin_fail');
+    $remaining = LOGIN_MAX_FAILS - $fails - 1;
 
     $error = $remaining > 0
         ? "Incorrect password. {$remaining} attempt(s) remaining."
-        : "Too many failed attempts. Try again in 15 minutes.";
+        : 'Too many failed attempts. Try again in ' . LOGIN_LOCK_MINUTES . ' minutes.';
 }
 ?>
 <!DOCTYPE html>

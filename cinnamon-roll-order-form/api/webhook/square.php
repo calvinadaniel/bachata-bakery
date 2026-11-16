@@ -7,31 +7,31 @@
  * Security: validates x-square-hmacsha256-signature before touching the DB.
  * Idempotent: safe to call multiple times for the same event (Square retries on non-2xx).
  *
- * Events handled:
- *   payment.completed — confirm / reconcile a paid order
- *   payment.failed    — reconcile a payment that failed after order.php ran
+ * Events handled (payment.created / payment.updated, routed by payment status):
+ *   COMPLETED         — confirm / reconcile a paid order
+ *   FAILED / CANCELED — reconcile a payment that failed after checkout.php ran
  *
- * Reconciliation scenarios (see order.php for the normal flow):
+ * Reconciliation scenarios (see checkout.php for the normal flow):
  *
- *   payment.completed + order is 'pending'
- *     → order.php crashed after the Square charge but before finaliseOrder().
- *       Counters were already pre-incremented. Just flip status to 'paid'.
+ *   COMPLETED + order is 'pending'
+ *     → checkout.php lost the payment response (timeout) or crashed before
+ *       markCheckoutPaid(). Counters were pre-incremented. Flip to 'paid'.
  *
- *   payment.completed + order is 'paid'
- *     → Already handled by order.php. No-op (idempotent).
+ *   COMPLETED + order is 'paid'
+ *     → Already handled by checkout.php. No-op (idempotent).
  *
- *   payment.completed + order is 'failed'
- *     → failOrder() ran (decremented counters) but Square actually succeeded.
+ *   COMPLETED + order is 'failed'
+ *     → failCheckout() released the items but Square actually succeeded.
  *       Flip status to 'paid' and re-increment counters. Log as UNUSUAL.
  *
- *   payment.failed + order is 'pending'
- *     → order.php crashed before failOrder() could decrement counters.
+ *   FAILED/CANCELED + order is 'pending'
+ *     → checkout.php crashed before failCheckout() could release items.
  *       Flip status to 'failed' and decrement counters.
  *
- *   payment.failed + order is 'failed'
+ *   FAILED/CANCELED + order is 'failed'
  *     → Already handled. No-op.
  *
- *   payment.failed + order is 'paid'
+ *   FAILED/CANCELED + order is 'paid'
  *     → Genuine conflict. Log as CRITICAL. Do not modify — needs manual review.
  */
 
@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once dirname(__DIR__) . '/helpers/db.php';
+require_once dirname(__DIR__) . '/helpers/webhook_lib.php';
 
 // ---------------------------------------------------------------
 // Custom exception for signature failures
@@ -66,13 +67,12 @@ try {
 
     // 2. Parse event payload
     $event = json_decode($rawBody, associative: true, flags: JSON_THROW_ON_ERROR);
-    $type  = $event['type'] ?? '';
 
-    // 3. Route to handler — unrecognised types are silently accepted (200)
-    match ($type) {
-        'payment.completed' => handlePaymentCompleted($event),
-        'payment.failed'    => handlePaymentFailed($event),
-        default             => null,
+    // 3. Route by payment status — unrecognised events are accepted (200)
+    match (routeSquareEvent($event)) {
+        'completed' => handlePaymentCompleted($event),
+        'failed'    => handlePaymentFailed($event),
+        default     => null,
     };
 
     http_response_code(200);
