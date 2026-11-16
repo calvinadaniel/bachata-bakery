@@ -869,7 +869,15 @@ img.loaded    { opacity: 1; }
 /* ============================================================
    TABS
    ============================================================ */
-.tabs-nav { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.tabs-nav {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+  position: relative;
+  z-index: 90;
+  scroll-margin-top: calc(var(--nav-h) + 12px);
+}
 .tab-btn {
   flex: 1;
   min-width: 160px;
@@ -888,6 +896,7 @@ img.loaded    { opacity: 1; }
 .tab-btn.active { background: var(--wine); border-color: var(--wine); color: var(--cream-2); }
 .tab-btn .tab-emoji { display: block; font-size: 1.5rem; margin-bottom: var(--space-1); }
 .tab-btn .tab-label { display: block; font-family: var(--font-body); font-size: 0.9375rem; font-weight: 400; font-style: italic; opacity: 0.85; margin-top: 2px; }
+.tab-btn { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
@@ -1077,7 +1086,8 @@ select.form-input {
 .products-catnav a.active { background: var(--wine); border-color: var(--wine); color: var(--cream-2); }
 
 .products-section { scroll-margin-top: calc(var(--nav-h) + 80px); }
-#book { scroll-margin-top: calc(var(--nav-h) + 12px); }
+#book,
+#presale-form { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .products-section-head { max-width: 680px; margin-bottom: var(--space-6); }
 .products-section-head .label { display: block; margin-bottom: var(--space-2); }
 .products-section-head .display-sm { margin-bottom: var(--space-3); }

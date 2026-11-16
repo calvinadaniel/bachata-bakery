@@ -52,6 +52,23 @@
       });
     }
 
+    // Order tabs sit under the pinned nav once the section scrolls. Keep them
+    // in a band below the nav so a real click hits the tab, not .nav-inner.
+    var tabs = document.querySelector('.tabs-nav');
+    if (tabs) {
+      var section = tabs.closest('section') || tabs;
+      ScrollTrigger.create({
+        trigger: section,
+        start: function () { return 'top top+=' + Math.round(navOffsetPx()); },
+        end: function () {
+          return 'bottom top+=' + Math.round(navOffsetPx() + tabs.offsetHeight);
+        },
+        pin: tabs,
+        pinSpacing: false,
+        invalidateOnRefresh: true,
+      });
+    }
+
     // Native #hash jumps break under ScrollSmoother + normalizeScroll.
     // Route same-page anchors (and load/hashchange) through smoother.scrollTo.
     setupHashScroll();
@@ -61,6 +78,15 @@
     var raw = getComputedStyle(document.documentElement).getPropertyValue('--nav-h');
     var n = parseFloat(raw);
     return (isFinite(n) ? n : 80) + 12;
+  }
+
+  function obscuringOffset(el) {
+    var offset = navOffsetPx();
+    var tabs = document.querySelector('.tabs-nav');
+    if (!tabs || !el || tabs.contains(el)) return offset;
+    var section = tabs.closest('section');
+    if (section && section.contains(el)) offset += tabs.getBoundingClientRect().height || tabs.offsetHeight;
+    return offset;
   }
 
   function scrollToHash(hash, smooth) {
@@ -76,7 +102,7 @@
     if (!el) return false;
 
     var smoother = window.ScrollSmoother && ScrollSmoother.get();
-    var offset = navOffsetPx();
+    var offset = obscuringOffset(el);
     if (smoother) {
       smoother.scrollTo(el, !!smooth, 'top ' + Math.round(offset) + 'px');
       return true;
@@ -116,7 +142,9 @@
       if (window.location.hash !== hash) {
         history.pushState(null, '', hash);
       }
-      scrollToHash(hash, true);
+      // Immediate. A smooth scrollTo after ScrollSmoother's own immediate
+      // scroll (focus or scrollIntoView) never moves the content transform.
+      scrollToHash(hash, false);
     });
 
     window.addEventListener('hashchange', function () {
