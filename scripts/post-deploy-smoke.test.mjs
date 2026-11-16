@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
@@ -66,4 +67,14 @@ test('exitCode is 2 for a runner error, 1 for a failed check, 0 when all pass', 
     runnerError: '',
     checks: [{ name: 'x', viewport: '1280x800', pass: true, reason: '' }],
   }), 0);
+});
+
+test('runner does not submit forms or wait for network idle', () => {
+  const src = readFileSync(new URL('./post-deploy-smoke.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(src, /\.fill\(/);
+  assert.doesNotMatch(src, /networkidle/);
+  assert.doesNotMatch(src, /presale-continue-btn/);
+  assert.doesNotMatch(src, /submit\.jotform/);
+  assert.match(src, /expectsNativeBooking/);
+  assert.match(src, /JotFormIFrame-252817790661061/);
 });
