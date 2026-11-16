@@ -1223,6 +1223,7 @@ select.form-input {
 }
 
 .products-section { scroll-margin-top: 14rem; }
+#book { scroll-margin-top: calc(var(--nav-h) + 12px); }
 .products-section-head { max-width: 680px; margin-bottom: var(--space-6); }
 .products-section-head .label { color: var(--primary); margin-bottom: var(--space-2); }
 .products-section-head .display-sm { margin-bottom: var(--space-3); }
