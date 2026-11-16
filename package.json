@@ -1,0 +1,26 @@
+{
+  "name": "bachata-bakery",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "node --test scripts/post-deploy-smoke.test.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calvinadaniel/bachata-bakery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calvinadaniel/bachata-bakery/issues"
+  },
+  "homepage": "https://github.com/calvinadaniel/bachata-bakery#readme",
+  "dependencies": {
+    "gsap": "^3.15.1"
+  }
+}
