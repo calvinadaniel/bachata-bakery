@@ -8,6 +8,7 @@ import {
   checkSlug,
   renderReport,
   exitCode,
+  sameDocument,
 } from './post-deploy-smoke-lib.mjs';
 
 test('parseBase requires an http(s) --base and returns the origin', () => {
@@ -67,6 +68,37 @@ test('exitCode is 2 for a runner error, 1 for a failed check, 0 when all pass', 
     runnerError: '',
     checks: [{ name: 'x', viewport: '1280x800', pass: true, reason: '' }],
   }), 0);
+});
+
+test('sameDocument ignores the hash and requires origin, pathname, and search', () => {
+  assert.equal(
+    sameDocument(
+      'https://bachatabakery.com/cookie-class/#book',
+      'https://bachatabakery.com/cookie-class/',
+    ),
+    true,
+  );
+  assert.equal(
+    sameDocument(
+      'https://bachatabakery.com/cookie-class/?class=a',
+      'https://bachatabakery.com/cookie-class/?class=b',
+    ),
+    false,
+  );
+  assert.equal(
+    sameDocument(
+      'https://bachatabakery.com/cookie-class/',
+      'https://bachatabakery.com/order/',
+    ),
+    false,
+  );
+  assert.equal(
+    sameDocument(
+      'https://dev.bachatabakery.com/cookie-class/',
+      'https://bachatabakery.com/cookie-class/',
+    ),
+    false,
+  );
 });
 
 test('runner does not submit forms or wait for network idle', () => {

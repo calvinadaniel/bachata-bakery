@@ -56,3 +56,11 @@ export function exitCode({ runnerError, checks }) {
   if (checks.some((check) => !check.pass)) return 1;
   return 0;
 }
+
+export function sameDocument(currentUrl, targetUrl) {
+  const current = new URL(currentUrl);
+  const target = new URL(targetUrl);
+  return current.origin === target.origin
+    && current.pathname === target.pathname
+    && current.search === target.search;
+}

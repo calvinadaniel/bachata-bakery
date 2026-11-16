@@ -9,6 +9,7 @@ import {
   checkSlug,
   renderReport,
   exitCode,
+  sameDocument,
 } from './post-deploy-smoke-lib.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -52,8 +53,11 @@ async function assertBookingSurface(page, base) {
 
 async function openPage(page, url) {
   const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: checkTimeout });
-  if (!response) throw new Error(`no response from ${url}`);
-  if (response.status() >= 400) throw new Error(`${url} returned ${response.status()}`);
+  if (!response) {
+    if (!sameDocument(page.url(), url)) throw new Error(`no response from ${url}`);
+  } else if (response.status() >= 400) {
+    throw new Error(`${url} returned ${response.status()}`);
+  }
   await page.waitForTimeout(800);
 }
 
